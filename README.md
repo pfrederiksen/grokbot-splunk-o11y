@@ -1,0 +1,81 @@
+![A friendly robot beside abstract observability charts](docs/images/header.png)
+
+# Grok Bot + Splunk Observability Cloud
+
+A small, unofficial tutorial for sending **basic Grok Bot metrics** to
+[Splunk Observability Cloud](https://www.splunk.com/en_us/products/observability.html)
+(historically SignalFx): box health, a routine heartbeat, and a silent-emitter
+detector. It is a community sample, not affiliated with Splunk or xAI.
+
+You will end up with:
+
+- A stdlib Python emitter that posts one batched set of `grokbot.*` gauges
+  every five minutes
+- A wrapper script that loads tokens from `chmod 600` files and never prints them
+- A Grok Bot routine that stays quiet unless **two consecutive** runs fail
+- A **Bot Health** dashboard plus detectors (emitter silent, disk high, memory
+  high, stale sync), applied as code
+
+## Prerequisites
+
+- Python 3.10 or newer (standard library only; no `pip install`)
+- A Splunk Observability Cloud organization, including the [Free Edition](https://www.splunk.com/en_us/blog/observability/splunk-observability-cloud-free-edition.html) (up to 15 hosts)
+- An org **INGEST** token for the emitter and a separate org **API** token for dashboards
+
+## Quickstart
+
+1. Create two org tokens in **Settings → Access Tokens**. Extend the expiry
+   (the default is 30 days; the maximum is one year). See [Concepts](docs/concepts.md).
+2. Store them as `chmod 600` files or environment variables. Never `echo` them.
+
+       mkdir -p ~/.config/grokbot-splunk-o11y/secrets
+       chmod 700 ~/.config/grokbot-splunk-o11y/secrets
+       # write INGEST_TOKEN, API_TOKEN, and REALM into that directory, then:
+       chmod 600 ~/.config/grokbot-splunk-o11y/secrets/*
+
+   Or export `SPLUNK_O11Y_REALM`, `SPLUNK_O11Y_INGEST_TOKEN`, and
+   `SPLUNK_O11Y_API_TOKEN`. Copy [.env.example](.env.example) as a reminder,
+   but keep the real file out of git.
+3. Dry-run the emitter (no network, no token required):
+
+       python3 bin/emit.py --dry-run
+
+4. Send a real batch (the wrapper loads secret files if the env vars are unset):
+
+       bin/run_emit.sh
+
+   A successful run prints a single line such as:
+
+       o11y emit: ingest=200 points=7 mts~7 ms=42 sources_fail=none err=ok alert=no
+
+5. Inspect the dashboard and detector JSON, then apply it:
+
+       python3 bin/apply_dashboards.py --dry-run
+       python3 bin/apply_dashboards.py --notify-email alerts@example.com
+
+   Replace `alerts@example.com` with an address you control before a live apply.
+6. Schedule a 5-minute Grok Bot routine using the sample prompt in
+   [Setup](docs/setup.md#sample-grok-bot-routine).
+
+## Guides
+
+| Guide | What it covers |
+| --- | --- |
+| [Concepts](docs/concepts.md) | Realms, ingest vs API tokens, expiry, Free Edition limits, MTS |
+| [Setup](docs/setup.md) | Token files, the emitter, the 5-minute routine prompt |
+| [Dashboards and detectors](docs/dashboards-and-detectors.md) | Bot Health as code, SignalFlow, `--dry-run` |
+| [Best practices](docs/best-practices.md) | Cardinality, naming, heartbeats, token hygiene, MTS budget |
+| [Ideas](docs/ideas.md) | Optional hobby metrics (golf, birds, home, email) with fake data |
+
+## Tests
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+CI runs the same tests on Python 3.10 through 3.13 and runs gitleaks on the
+history. There are no third-party runtime dependencies.
+
+## License
+
+[MIT](LICENSE). Copyright (c) 2026 pfrederiksen.
