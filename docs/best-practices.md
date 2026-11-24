@@ -43,7 +43,7 @@ chart.
 A gauge that is "usually 1" does not alert when the process dies, because no
 new 0 is ever sent. Always emit a heartbeat (`grokbot.emitter.ok`) and pair it
 with a detector that fires when the series is **missing** for a few schedule
-intervals (20 minutes here, with a 5-minute routine).
+intervals (2 hours 15 minutes here, with an hourly routine).
 
 ## Token least privilege and rotation
 

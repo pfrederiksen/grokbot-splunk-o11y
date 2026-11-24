@@ -1,0 +1,28 @@
+{
+  "id": "<DETECTOR_ID_EMITTER_SILENT>",
+  "name": "Emitter silent",
+  "description": "No grokbot.emitter.ok datapoints for 2 hours 15 minutes (hourly emitter around :07 PT; one missed run plus slack).",
+  "programText": "from signalfx.detectors.not_reporting import not_reporting\nnot_reporting.detector(data('grokbot.emitter.ok'), '2h15m').publish('Emitter silent')\n",
+  "rules": [
+    {
+      "detectLabel": "Emitter silent",
+      "disabled": false,
+      "notifications": [
+        {
+          "type": "Email",
+          "bcc": [],
+          "cc": [],
+          "email": "alerts@example.com"
+        }
+      ],
+      "parameterizedBody": "No grokbot.emitter.ok points for 2 hours 1 hour 15 minutes. The 5-minute emit routine may have stopped.",
+      "parameterizedSubject": "Grok Bot emitter silent",
+      "severity": "Critical"
+    }
+  ],
+  "maxDelay": 0,
+  "minDelay": null,
+  "timezone": null,
+  "tags": [],
+  "detectorOrigin": "Standard"
+}

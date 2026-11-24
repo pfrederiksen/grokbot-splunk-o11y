@@ -36,7 +36,7 @@ user session token.
 
 | Token | Scope | Used by | Why it is separate |
 | --- | --- | --- | --- |
-| Ingest | **INGEST** only | `bin/run_emit.sh` / `bin/emit.py` | Least privilege for a 5-minute job that only POSTs datapoints |
+| Ingest | **INGEST** only | `bin/run_emit.sh` / `bin/emit.py` | Least privilege for an hourly job that sends OTLP metrics (and traces) |
 | API | **API** (with a role that can create dashboards and detectors) | `bin/apply_dashboards.py` | The emitter never needs this; do not put it on the routine's host if you can avoid it |
 
 A user "Show API Access Token" session token from your profile can often list
@@ -105,3 +105,7 @@ One run of the emitter sends **one** HTTP POST:
 
 Treat HTTP 200 and 204 as success. Do not retry in a tight loop on 401, 403,
 or 429 — fix the token, the realm, or the catalog instead.
+
+## Optional OpenTelemetry path
+
+The default emitter uses OTLP/HTTP (`/v2/datapoint/otlp`). A legacy `/v2/datapoint` path and an example collector config are documented in [otel.md](otel.md). Do not run both paths into the same org at once.

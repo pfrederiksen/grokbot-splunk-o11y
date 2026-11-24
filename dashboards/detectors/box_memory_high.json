@@ -1,0 +1,28 @@
+{
+  "id": "<DETECTOR_ID_BOX_MEMORY_HIGH>",
+  "name": "Box memory high",
+  "description": "Memory above 90% for 1 hour 15 minutes (one hourly sample plus slack).",
+  "programText": "signal = data('grokbot.box.mem.pct')\ndetect(when(signal > 90, lasting='1h15m')).publish('Box memory high')\n",
+  "rules": [
+    {
+      "detectLabel": "Box memory high",
+      "disabled": false,
+      "notifications": [
+        {
+          "type": "Email",
+          "bcc": [],
+          "cc": [],
+          "email": "alerts@example.com"
+        }
+      ],
+      "parameterizedBody": "Box memory high is {{status}} at {{timestamp}}.",
+      "parameterizedSubject": "Box memory high triggered",
+      "severity": "Major"
+    }
+  ],
+  "maxDelay": 0,
+  "minDelay": null,
+  "timezone": null,
+  "tags": [],
+  "detectorOrigin": "Standard"
+}

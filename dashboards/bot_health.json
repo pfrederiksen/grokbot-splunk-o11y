@@ -1,0 +1,944 @@
+{
+  "id": "<DASHBOARD_ID_BOT_HEALTH>",
+  "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_HEALTH>",
+  "description": "Box resources, emitter heartbeat, and routine freshness — with sparklines, analytics, and detector overlays. Includes an APM traces pointer for the hourly OTLP emitter.",
+  "filters": {
+    "sources": [],
+    "time": null,
+    "variables": [
+      {
+        "alias": "Routine",
+        "applyIfExists": false,
+        "description": "Applies to charts that carry a routine dimension (freshness list, heatmap, table).",
+        "preferredSuggestions": [],
+        "property": "routine",
+        "propertyMappings": [
+          "routine"
+        ],
+        "replaceOnly": false,
+        "required": false,
+        "restricted": false,
+        "value": ""
+      }
+    ]
+  },
+  "eventOverlays": [
+    {
+      "eventColorIndex": 16,
+      "eventLine": true,
+      "eventSignal": {
+        "detectorId": "<DETECTOR_ID_EMITTER_SILENT>",
+        "eventSearchText": "Emitter silent",
+        "eventType": "detectorEvents"
+      },
+      "label": null,
+      "overlayId": "<OVERLAY_ID_4>",
+      "sources": []
+    },
+    {
+      "eventColorIndex": 16,
+      "eventLine": true,
+      "eventSignal": {
+        "detectorId": "<DETECTOR_ID_BOX_DISK_HIGH>",
+        "eventSearchText": "Box disk high",
+        "eventType": "detectorEvents"
+      },
+      "label": null,
+      "overlayId": "<OVERLAY_ID_1>",
+      "sources": []
+    },
+    {
+      "eventColorIndex": 5,
+      "eventLine": true,
+      "eventSignal": {
+        "detectorId": "<DETECTOR_ID_BOX_MEMORY_HIGH>",
+        "eventSearchText": "Box memory high",
+        "eventType": "detectorEvents"
+      },
+      "label": null,
+      "overlayId": "<OVERLAY_ID_8>",
+      "sources": []
+    }
+  ],
+  "charts": [
+    {
+      "layout": {
+        "chartId": "<CHART_ID_49>",
+        "column": 0,
+        "height": 1,
+        "row": 0,
+        "width": 12
+      },
+      "chart": {
+        "name": "Bot Health header",
+        "programText": "",
+        "options": {
+          "markdown": "# 💚 Bot Health\n\nIs the box healthy, is the emitter beating, and which routines are going stale?\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) · **Bot Health** · [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) · [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) · [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) · [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) · [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\n[Open the Grok Bot group](https://app.<REALM>.signalfx.com/#/dashboard-group/<GROUP_ID>) · green healthy · gold watch · red act · sparklines follow the dashboard time window.",
+          "type": "Text"
+        },
+        "description": null,
+        "id": "<CHART_ID_49>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_45>",
+        "column": 0,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Emitter OK",
+        "programText": "data('grokbot.emitter.ok').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 1.0,
+              "lt": null,
+              "lte": 1000000000.0,
+              "paletteIndex": 14
+            },
+            {
+              "gt": null,
+              "gte": -1000000000.0,
+              "lt": 1.0,
+              "lte": null,
+              "paletteIndex": 16
+            }
+          ],
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Emitter OK",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Radial",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_45>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_39>",
+        "column": 2,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Ingest HTTP",
+        "programText": "data('grokbot.emitter.http_status').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Ingest HTTP",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_39>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_10>",
+        "column": 4,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Emit duration",
+        "programText": "data('grokbot.emitter.duration_ms').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Emit duration",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "ms",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_10>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_43>",
+        "column": 6,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Datapoints / batch",
+        "programText": "data('grokbot.emitter.datapoints').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Datapoints / batch",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_43>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_95>",
+        "column": 8,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Failing routines",
+        "programText": "data('grokbot.routine.failing_count').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 1.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 1.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Failing routines",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_95>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_53>",
+        "column": 10,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Load 1m",
+        "programText": "data('grokbot.box.load.1').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 2,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Load 1m",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_53>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_31>",
+        "column": 0,
+        "height": 1,
+        "row": 2,
+        "width": 3
+      },
+      "chart": {
+        "name": "CPU",
+        "programText": "data('grokbot.box.cpu.pct').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 85.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 70.0,
+              "lt": 85.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 70.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 1,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "CPU",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_31>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_16>",
+        "column": 3,
+        "height": 1,
+        "row": 2,
+        "width": 3
+      },
+      "chart": {
+        "name": "Memory",
+        "programText": "data('grokbot.box.mem.pct').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 90.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 80.0,
+              "lt": 90.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 80.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 1,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Memory",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_16>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_9>",
+        "column": 6,
+        "height": 1,
+        "row": 2,
+        "width": 3
+      },
+      "chart": {
+        "name": "Disk",
+        "programText": "data('grokbot.box.disk.pct').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 85.0,
+              "lt": null,
+              "lte": 1000000000.0,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 70.0,
+              "lt": 85.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": -1000000000.0,
+              "lt": 70.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 1,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Disk",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Linear",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_9>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_44>",
+        "column": 9,
+        "height": 1,
+        "row": 2,
+        "width": 3
+      },
+      "chart": {
+        "name": "CPU 6h p95",
+        "programText": "data('grokbot.box.cpu.pct').percentile(95, over='6h').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 85.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 70.0,
+              "lt": 85.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 70.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 1,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "CPU 6h p95",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_44>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_126>",
+        "column": 0,
+        "height": 2,
+        "row": 3,
+        "width": 8
+      },
+      "chart": {
+        "name": "CPU / memory / disk, with 6h mean",
+        "programText": "cpu = data('grokbot.box.cpu.pct')\nmem = data('grokbot.box.mem.pct')\ndisk = data('grokbot.box.disk.pct')\ncpu.publish('CPU')\ncpu.mean(over='6h').publish('CPU 6h avg')\nmem.publish('Mem')\ndisk.publish('Disk')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "AreaChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "CPU",
+              "label": "CPU",
+              "paletteIndex": 1,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "CPU 6h avg",
+              "label": "CPU 6h avg",
+              "paletteIndex": 2,
+              "plotType": "LineChart",
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Memory",
+              "label": "Mem",
+              "paletteIndex": 5,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Disk",
+              "label": "Disk",
+              "paletteIndex": 6,
+              "plotType": "LineChart",
+              "valuePrefix": null,
+              "valueSuffix": "%",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_126>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_17>",
+        "column": 8,
+        "height": 2,
+        "row": 3,
+        "width": 4
+      },
+      "chart": {
+        "name": "Emitter duration (histogram)",
+        "programText": "data('grokbot.emitter.duration_ms').publish('ms')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "Histogram",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Duration",
+              "label": "ms",
+              "paletteIndex": 1,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "ms",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_17>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_70>",
+        "column": 0,
+        "height": 2,
+        "row": 5,
+        "width": 6
+      },
+      "chart": {
+        "name": "Load average vs 1h ago",
+        "programText": "l = data('grokbot.box.load.1')\nl.publish('Now')\nl.timeshift('1h').publish('1h ago')\nl.mean(over='6h').publish('6h avg')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "LineChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": null,
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_70>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_94>",
+        "column": 6,
+        "height": 2,
+        "row": 5,
+        "width": 6
+      },
+      "chart": {
+        "name": "Routine age heatmap",
+        "programText": "data('grokbot.routine.age_seconds').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorRange": null,
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 32400.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 21600.0,
+              "lt": 32400.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 21600.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "groupBy": [
+            "routine"
+          ],
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": null,
+          "refreshInterval": null,
+          "sortDirection": "Ascending",
+          "sortProperty": null,
+          "time": null,
+          "timestampHidden": true,
+          "type": "Heatmap",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_94>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_50>",
+        "column": 0,
+        "height": 2,
+        "row": 7,
+        "width": 6
+      },
+      "chart": {
+        "name": "Routine age (seconds)",
+        "programText": "data('grokbot.routine.age_seconds').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 32400.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 21600.0,
+              "lt": 32400.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 21600.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "hideMissingValues": false,
+          "legendOptions": {
+            "fields": null
+          },
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Routine age (seconds)",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "sortBy": null,
+          "time": null,
+          "type": "List",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_50>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_121>",
+        "column": 6,
+        "height": 2,
+        "row": 7,
+        "width": 6
+      },
+      "chart": {
+        "name": "Box & emitter detector events",
+        "programText": "events(eventType='*').publish('all')",
+        "options": {
+          "eventPublishLabelOptions": null,
+          "noDataOptions": null,
+          "time": null,
+          "type": "Event"
+        },
+        "description": null,
+        "id": "<CHART_ID_121>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_127>",
+        "column": 0,
+        "height": 1,
+        "row": 9,
+        "width": 12
+      },
+      "chart": {
+        "name": "APM traces",
+        "programText": "",
+        "options": {
+          "markdown": "# 🛰️ APM traces\n\nEach hourly emit (`:07` Pacific) sends one OpenTelemetry trace for service **grokbot-emitter**, with a child span per collector (box, golf, trading, birds, home, email, calendar, backup, jobs, ebay, routines).\n\n[Open APM](https://app.<REALM>.signalfx.com/#/apm/home) and look up service `grokbot-emitter`. Metric names are still `grokbot.*` (OTLP/HTTP); custom MTS should stay about 95.",
+          "type": "Text"
+        },
+        "description": null,
+        "id": "<CHART_ID_127>"
+      }
+    }
+  ]
+}

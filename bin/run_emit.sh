@@ -36,7 +36,20 @@ if [[ -z "${SPLUNK_O11Y_REALM:-}" ]]; then
   exit 0
 fi
 
-# Prefer the repo's virtualenv python if a user later adds one; otherwise system python3.
-PYTHON="${GROKBOT_PYTHON:-python3}"
+# Prefer a repo venv if present (pip install -r requirements-otel.txt into .venv).
+if [[ -z "${GROKBOT_PYTHON:-}" && -x "$ROOT/.venv/bin/python" ]]; then
+  PYTHON="$ROOT/.venv/bin/python"
+else
+  PYTHON="${GROKBOT_PYTHON:-python3}"
+fi
+# Production default is OTLP. Do not also POST to /v2/datapoint (that doubles MTS).
+unset SPLUNK_O11Y_INGEST_URL || true
+export GROKBOT_O11Y_PROTOCOL="${GROKBOT_O11Y_PROTOCOL:-otlp}"
+if [[ -n "${SPLUNK_O11Y_REALM:-}" && -z "${SPLUNK_O11Y_OTLP_URL:-}" ]]; then
+  export SPLUNK_O11Y_OTLP_URL="https://ingest.${SPLUNK_O11Y_REALM}.signalfx.com/v2/datapoint/otlp"
+fi
+if [[ -n "${SPLUNK_O11Y_REALM:-}" && -z "${SPLUNK_O11Y_OTLP_TRACES_URL:-}" ]]; then
+  export SPLUNK_O11Y_OTLP_TRACES_URL="https://ingest.${SPLUNK_O11Y_REALM}.signalfx.com/v2/trace/otlp"
+fi
 cd "$ROOT"
 exec "$PYTHON" "$ROOT/bin/emit.py" "$@"

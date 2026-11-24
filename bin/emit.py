@@ -342,7 +342,22 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Build the payload and print a redacted summary without posting.",
     )
+    parser.add_argument(
+        "--protocol",
+        choices=("signalfx", "otlp"),
+        default=None,
+        help="Ingest protocol. Default: otlp (OTLP/HTTP). "
+        "signalfx is the legacy /v2/datapoint path and should not be combined with otlp in the same org.",
+    )
     return parser.parse_args(argv)
+
+
+def selected_protocol(args: argparse.Namespace | None = None) -> str:
+    raw = (args.protocol if args is not None and args.protocol else None) or os.environ.get("GROKBOT_O11Y_PROTOCOL") or "otlp"
+    raw = str(raw).strip().lower()
+    if raw not in {"signalfx", "otlp"}:
+        return "otlp"
+    return raw
 
 
 def run(argv: list[str] | None = None) -> int:
@@ -433,7 +448,15 @@ def run(argv: list[str] | None = None) -> int:
         )
         return 0
 
-    status, err = ingest(payload, url, token) if out else (None, "no_points")
+    protocol = selected_protocol(args)
+    if protocol == "otlp":
+        import otlp as otlp_mod
+        if not otlp_mod.sdk_available():
+            status, err = None, "missing_otel_sdk"
+        else:
+            status, err = otlp_mod.export_gauges(out, token, realm=os.environ.get("SPLUNK_O11Y_REALM")) if out else (None, "no_points")
+    else:
+        status, err = ingest(payload, url, token) if out else (None, "no_points")
     success = status in (200, 204)
     updated = record_result(prior, success, err if not success else "", now_epoch=epoch)
     try:

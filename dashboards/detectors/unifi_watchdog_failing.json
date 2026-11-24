@@ -1,0 +1,28 @@
+{
+  "id": "<DETECTOR_ID_UNIFI_WATCHDOG_FAILING>",
+  "name": "UniFi watchdog failing",
+  "description": "UniFi watchdog not ok for 1 hour 15 minutes (hourly emitter).",
+  "programText": "signal = data('grokbot.home.unifi.watchdog_ok')\ndetect(when(signal == 0, lasting='1h15m')).publish('UniFi watchdog failing')\n",
+  "rules": [
+    {
+      "detectLabel": "UniFi watchdog failing",
+      "disabled": false,
+      "notifications": [
+        {
+          "type": "Email",
+          "bcc": [],
+          "cc": [],
+          "email": "alerts@example.com"
+        }
+      ],
+      "parameterizedBody": "UniFi watchdog failing is {{status}} at {{timestamp}}.",
+      "parameterizedSubject": "UniFi watchdog failing triggered",
+      "severity": "Major"
+    }
+  ],
+  "maxDelay": 0,
+  "minDelay": null,
+  "timezone": null,
+  "tags": [],
+  "detectorOrigin": "Standard"
+}

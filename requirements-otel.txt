@@ -1,0 +1,9 @@
+# Required for the default OTLP emitter (bin/run_emit.sh / --protocol otlp).
+# Install into a project venv, for example: python3 -m venv .venv && .venv/bin/pip install -r requirements-otel.txt
+#   pip install -r requirements-otel.txt
+#
+# Do not enable OTLP and /v2/datapoint against the same org at the same time;
+# that doubles custom MTS.
+opentelemetry-api>=1.27,<2
+opentelemetry-sdk>=1.27,<2
+opentelemetry-exporter-otlp-proto-http>=1.27,<2

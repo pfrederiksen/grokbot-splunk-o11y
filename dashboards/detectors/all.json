@@ -1,0 +1,228 @@
+{
+  "detectors": [
+    {
+      "id": "<DETECTOR_ID_EMITTER_SILENT>",
+      "name": "Emitter silent",
+      "description": "No grokbot.emitter.ok datapoints for 2 hours 15 minutes (hourly emitter around :07 PT; one missed run plus slack).",
+      "programText": "from signalfx.detectors.not_reporting import not_reporting\nnot_reporting.detector(data('grokbot.emitter.ok'), '2h15m').publish('Emitter silent')\n",
+      "rules": [
+        {
+          "detectLabel": "Emitter silent",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "No grokbot.emitter.ok points for 2 hours 1 hour 15 minutes. The 5-minute emit routine may have stopped.",
+          "parameterizedSubject": "Grok Bot emitter silent",
+          "severity": "Critical"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    {
+      "id": "<DETECTOR_ID_BOX_DISK_HIGH>",
+      "name": "Box disk high",
+      "description": "Root disk above 85% for 1 hour 15 minutes (one hourly sample plus slack).",
+      "programText": "signal = data('grokbot.box.disk.pct')\ndetect(when(signal > 85, lasting='1h15m')).publish('Box disk high')\n",
+      "rules": [
+        {
+          "detectLabel": "Box disk high",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "Box disk high is {{status}} at {{timestamp}}.",
+          "parameterizedSubject": "Box disk high triggered",
+          "severity": "Major"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    {
+      "id": "<DETECTOR_ID_BOX_MEMORY_HIGH>",
+      "name": "Box memory high",
+      "description": "Memory above 90% for 1 hour 15 minutes (one hourly sample plus slack).",
+      "programText": "signal = data('grokbot.box.mem.pct')\ndetect(when(signal > 90, lasting='1h15m')).publish('Box memory high')\n",
+      "rules": [
+        {
+          "detectLabel": "Box memory high",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "Box memory high is {{status}} at {{timestamp}}.",
+          "parameterizedSubject": "Box memory high triggered",
+          "severity": "Major"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    {
+      "id": "<DETECTOR_ID_HA_DOWN>",
+      "name": "HA down",
+      "description": "Home Assistant reported down for 1 hour 15 minutes (hourly emitter).",
+      "programText": "signal = data('grokbot.home.ha.up')\ndetect(when(signal == 0, lasting='1h15m')).publish('HA down')\n",
+      "rules": [
+        {
+          "detectLabel": "HA down",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "HA down is {{status}} at {{timestamp}}.",
+          "parameterizedSubject": "HA down triggered",
+          "severity": "Critical"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    {
+      "id": "<DETECTOR_ID_UNIFI_WATCHDOG_FAILING>",
+      "name": "UniFi watchdog failing",
+      "description": "UniFi watchdog not ok for 1 hour 15 minutes (hourly emitter).",
+      "programText": "signal = data('grokbot.home.unifi.watchdog_ok')\ndetect(when(signal == 0, lasting='1h15m')).publish('UniFi watchdog failing')\n",
+      "rules": [
+        {
+          "detectLabel": "UniFi watchdog failing",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "UniFi watchdog failing is {{status}} at {{timestamp}}.",
+          "parameterizedSubject": "UniFi watchdog failing triggered",
+          "severity": "Major"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    {
+      "id": "<DETECTOR_ID_BACKUP_FAILED_OR_STALE>",
+      "name": "Backup failed or stale",
+      "description": "Backup success is 0, or backup age is over 25 hours, for 1 hour 15 minutes.",
+      "programText": "success = data('grokbot.backup.success')\nage = data('grokbot.backup.age_hours')\ndetect(when(success == 0, lasting='1h15m') or when(age > 25, lasting='1h15m')).publish('Backup failed or stale')\n",
+      "rules": [
+        {
+          "detectLabel": "Backup failed or stale",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "Backup failed or stale is {{status}} at {{timestamp}}.",
+          "parameterizedSubject": "Backup failed or stale triggered",
+          "severity": "Major"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    {
+      "id": "<DETECTOR_ID_EMAIL_SYNC_STALE>",
+      "name": "Email sync stale",
+      "description": "Email sync age above 9 hours for 1 hour 15 minutes.",
+      "programText": "signal = data('grokbot.email.sync.age_seconds')\ndetect(when(signal > 32400, lasting='1h15m')).publish('Email sync stale')\n",
+      "rules": [
+        {
+          "detectLabel": "Email sync stale",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "Email sync stale is {{status}} at {{timestamp}}.",
+          "parameterizedSubject": "Email sync stale triggered",
+          "severity": "Warning"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    {
+      "id": "<DETECTOR_ID_BIRDS_SYNC_STALE>",
+      "name": "Birds sync stale",
+      "description": "Birds sync age above 2 hours for 1 hour 15 minutes.",
+      "programText": "signal = data('grokbot.birds.sync.age_seconds')\ndetect(when(signal > 7200, lasting='1h15m')).publish('Birds sync stale')\n",
+      "rules": [
+        {
+          "detectLabel": "Birds sync stale",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "bcc": [],
+              "cc": [],
+              "email": "alerts@example.com"
+            }
+          ],
+          "parameterizedBody": "Birds sync stale is {{status}} at {{timestamp}}.",
+          "parameterizedSubject": "Birds sync stale triggered",
+          "severity": "Warning"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    }
+  ]
+}

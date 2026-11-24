@@ -1,6 +1,6 @@
 # Setup
 
-A walkthrough from empty tokens to a quiet 5-minute Grok Bot routine.
+A walkthrough from empty tokens to a quiet hourly Grok Bot routine.
 
 ## 1. Create the tokens
 
@@ -104,11 +104,11 @@ updates them. Details are in [Dashboards and detectors](dashboards-and-detectors
 ## Sample Grok Bot routine
 
 Paste a prompt like the following into a Grok Bot routine scheduled every
-**five minutes**. Daily is too slow for a heartbeat; the silent detector is
-tuned to 20 minutes, which is four missed 5-minute runs.
+**hourly** (for example around :07). Daily is too slow for a heartbeat; the silent detector is
+tuned to 2 hours 15 minutes, which is one missed hourly run plus slack.
 
 ```text
-You run the grokbot-splunk-o11y emitter on a 5-minute schedule.
+You run the grokbot-splunk-o11y emitter on an hourly schedule (for example around :07).
 
 Working directory: the grokbot-splunk-o11y checkout.
 Command: bin/run_emit.sh

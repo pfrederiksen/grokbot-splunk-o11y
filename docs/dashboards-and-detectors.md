@@ -58,23 +58,23 @@ Layout is a two-column, three-row grid.
 
 | Name | Condition |
 | --- | --- |
-| Emitter silent | no `grokbot.emitter.ok` for 20 minutes |
-| Box disk high | `grokbot.box.disk.pct` > 85 for 15 minutes |
-| Box memory high | `grokbot.box.mem.pct` > 90 for 15 minutes |
-| Stale sync | `grokbot.routine.age_seconds` > 21600 (6 hours) for 15 minutes |
+| Emitter silent | no `grokbot.emitter.ok` for 2 hours 15 minutes |
+| Box disk high | `grokbot.box.disk.pct` > 85 for 1 hour 15 minutes |
+| Box memory high | `grokbot.box.mem.pct` > 90 for 1 hour 15 minutes |
+| Stale sync | `grokbot.routine.age_seconds` > 21600 (6 hours) for 1 hour 15 minutes |
 
 Example SignalFlow for the heartbeat detector:
 
 ```text
 ok = data('grokbot.emitter.ok').publish('ok')
-detect(when(ok is None, lasting='20m')).publish('Emitter silent')
+not_reporting.detector(ok, '2h15m').publish('Emitter silent')
 ```
 
 And for disk:
 
 ```text
 disk = data('grokbot.box.disk.pct').publish('disk')
-detect(when(disk > 85, lasting='15m')).publish('Box disk high')
+detect(when(disk > 85, lasting='1h15m')).publish('Box disk high')
 ```
 
 The silent detector is the important one. If the routine stops, the token
@@ -86,3 +86,7 @@ You can attach a notification integration other than email by editing the
 `notifications` list in `detector_definitions()` (keep secrets out of the
 repo). Definitions are in `bin/apply_dashboards.py` and are covered by
 `tests/test_dashboards.py`.
+
+## Richer dashboard snapshot
+
+JSON under [`dashboards/`](../dashboards/) is an export of a fuller dashboard set (Overview, Bot Health, and topic boards) that uses SingleValue sparklines, lists, heatmaps, tables, event feeds, and detector overlays. `bin/apply_dashboards.py` is still the small, idempotent Bot Health starter covered by the tests above.

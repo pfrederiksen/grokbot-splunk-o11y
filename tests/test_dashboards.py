@@ -54,29 +54,29 @@ class DetectorTests(unittest.TestCase):
             {"Emitter silent", "Box disk high", "Box memory high", "Stale sync"},
         )
 
-    def test_emitter_silent_uses_ok_metric_and_20m(self) -> None:
+    def test_emitter_silent_uses_ok_metric_and_2h15m(self) -> None:
         program = self._by_name()["Emitter silent"]["programText"]
         self.assertIn("grokbot.emitter.ok", program)
-        self.assertIn("lasting='20m'", program)
+        self.assertIn("lasting='2h15m'", program)
         self.assertIn("is None", program)
 
     def test_disk_high_threshold(self) -> None:
         program = self._by_name()["Box disk high"]["programText"]
         self.assertIn("grokbot.box.disk.pct", program)
         self.assertIn("> 85", program)
-        self.assertIn("lasting='15m'", program)
+        self.assertIn("lasting='1h15m'", program)
 
     def test_memory_high_threshold(self) -> None:
         program = self._by_name()["Box memory high"]["programText"]
         self.assertIn("grokbot.box.mem.pct", program)
         self.assertIn("> 90", program)
-        self.assertIn("lasting='15m'", program)
+        self.assertIn("lasting='1h15m'", program)
 
     def test_stale_sync_threshold(self) -> None:
         program = self._by_name()["Stale sync"]["programText"]
         self.assertIn("grokbot.routine.age_seconds", program)
         self.assertIn("> 21600", program)
-        self.assertIn("lasting='15m'", program)
+        self.assertIn("lasting='1h15m'", program)
 
     def test_notification_placeholder_is_example_com_only(self) -> None:
         for det in dash.detector_definitions():

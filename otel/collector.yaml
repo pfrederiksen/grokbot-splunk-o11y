@@ -1,0 +1,62 @@
+# Example OpenTelemetry Collector config for Splunk Observability Cloud.
+#
+# This file is a sample sidecar. The default emitter talks OTLP/HTTP
+# straight to Splunk ingest; use this only if you want a local collector.
+#
+# Do not put tokens or other secrets in this file. Provide them from the
+# environment (or a chmod 600 file your supervisor reads):
+#   SPLUNK_REALM           e.g. us1
+#   SPLUNK_ACCESS_TOKEN    an org INGEST token (not the API token)
+#
+# Run a contrib or Splunk distribution of the collector, for example:
+#   otelcol --config otel/collector.yaml
+#
+# Point the Python emitter at the local receiver instead of Splunk ingest:
+#   export GROKBOT_O11Y_PROTOCOL=otlp
+#   export SPLUNK_O11Y_OTLP_URL=http://127.0.0.1:4318/v1/metrics
+#
+# Keep the filter tight. Do not enable a hostmetrics receiver here — on a
+# Free / host-based plan, default host or collector metrics can consume
+# host slots or unexpected custom MTS.
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 127.0.0.1:4318
+      grpc:
+        endpoint: 127.0.0.1:4317
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 200
+  batch:
+    send_batch_size: 200
+    timeout: 5s
+  filter/grokbot:
+    metrics:
+      include:
+        match_type: regexp
+        metric_names:
+          - "^grokbot\\..*"
+
+exporters:
+  otlphttp/splunk:
+    metrics_endpoint: https://ingest.${SPLUNK_REALM}.signalfx.com/v2/datapoint/otlp
+    traces_endpoint: https://ingest.${SPLUNK_REALM}.signalfx.com/v2/trace/otlp
+    logs_endpoint: https://ingest.${SPLUNK_REALM}.signalfx.com/v2/logs/otlp
+    headers:
+      X-SF-TOKEN: ${SPLUNK_ACCESS_TOKEN}
+
+extensions:
+  health_check:
+    endpoint: 127.0.0.1:13133
+
+service:
+  extensions: [health_check]
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/grokbot, batch]
+      exporters: [otlphttp/splunk]

@@ -1,0 +1,28 @@
+{
+  "id": "<DETECTOR_ID_BACKUP_FAILED_OR_STALE>",
+  "name": "Backup failed or stale",
+  "description": "Backup success is 0, or backup age is over 25 hours, for 1 hour 15 minutes.",
+  "programText": "success = data('grokbot.backup.success')\nage = data('grokbot.backup.age_hours')\ndetect(when(success == 0, lasting='1h15m') or when(age > 25, lasting='1h15m')).publish('Backup failed or stale')\n",
+  "rules": [
+    {
+      "detectLabel": "Backup failed or stale",
+      "disabled": false,
+      "notifications": [
+        {
+          "type": "Email",
+          "bcc": [],
+          "cc": [],
+          "email": "alerts@example.com"
+        }
+      ],
+      "parameterizedBody": "Backup failed or stale is {{status}} at {{timestamp}}.",
+      "parameterizedSubject": "Backup failed or stale triggered",
+      "severity": "Major"
+    }
+  ],
+  "maxDelay": 0,
+  "minDelay": null,
+  "timezone": null,
+  "tags": [],
+  "detectorOrigin": "Standard"
+}

@@ -1,0 +1,1129 @@
+{
+  "id": "<DASHBOARD_ID_OPS>",
+  "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>",
+  "description": "Email, calendar, backup, jobs and eBay — routine freshness, sync ages, and stale-detector overlays.",
+  "filters": {
+    "sources": [],
+    "time": null,
+    "variables": [
+      {
+        "alias": "Routine",
+        "applyIfExists": false,
+        "description": "Applies to charts that carry a routine dimension (freshness list, heatmap, table).",
+        "preferredSuggestions": [],
+        "property": "routine",
+        "propertyMappings": [
+          "routine"
+        ],
+        "replaceOnly": false,
+        "required": false,
+        "restricted": false,
+        "value": ""
+      }
+    ]
+  },
+  "eventOverlays": [
+    {
+      "eventColorIndex": 16,
+      "eventLine": true,
+      "eventSignal": {
+        "detectorId": "<DETECTOR_ID_BACKUP_FAILED_OR_STALE>",
+        "eventSearchText": "Backup failed or stale",
+        "eventType": "detectorEvents"
+      },
+      "label": null,
+      "overlayId": "<OVERLAY_ID_3>",
+      "sources": []
+    },
+    {
+      "eventColorIndex": 17,
+      "eventLine": true,
+      "eventSignal": {
+        "detectorId": "<DETECTOR_ID_EMAIL_SYNC_STALE>",
+        "eventSearchText": "Email sync stale",
+        "eventType": "detectorEvents"
+      },
+      "label": null,
+      "overlayId": "<OVERLAY_ID_6>",
+      "sources": []
+    }
+  ],
+  "charts": [
+    {
+      "layout": {
+        "chartId": "<CHART_ID_32>",
+        "column": 0,
+        "height": 1,
+        "row": 0,
+        "width": 12
+      },
+      "chart": {
+        "name": "Ops header",
+        "programText": "",
+        "options": {
+          "markdown": "# 🛠️ Ops\n\nThe household jobs: nightly NAS backup, mail and calendar sync, job search, and eBay. Use the Routine filter on age charts. Backup is stale after 25 hours; email after 9.\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) · [Bot Health](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_HEALTH>) · [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) · [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) · [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) · [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) · **Ops**\n\n[Open the Grok Bot group](https://app.<REALM>.signalfx.com/#/dashboard-group/<GROUP_ID>) · green healthy · gold watch · red act · sparklines follow the dashboard time window.",
+          "type": "Text"
+        },
+        "description": null,
+        "id": "<CHART_ID_32>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_104>",
+        "column": 0,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Backup OK",
+        "programText": "data('grokbot.backup.success').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 1.0,
+              "lt": null,
+              "lte": 1000000000.0,
+              "paletteIndex": 14
+            },
+            {
+              "gt": null,
+              "gte": -1000000000.0,
+              "lt": 1.0,
+              "lte": null,
+              "paletteIndex": 16
+            }
+          ],
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Backup OK",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Radial",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_104>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_100>",
+        "column": 2,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Backup age",
+        "programText": "data('grokbot.backup.age_hours').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 25.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 20.0,
+              "lt": 25.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 20.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 1,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Backup age",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "h",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_100>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_98>",
+        "column": 4,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Backup duration",
+        "programText": "data('grokbot.backup.duration_seconds').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Backup duration",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_98>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_114>",
+        "column": 6,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Unread",
+        "programText": "data('grokbot.email.unread_total').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Unread",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_114>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_60>",
+        "column": 8,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Attention",
+        "programText": "data('grokbot.email.attention_count').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 1.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 1.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Attention",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_60>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_118>",
+        "column": 10,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Failing routines",
+        "programText": "data('grokbot.routine.failing_count').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 1.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 1.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Failing routines",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_118>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_34>",
+        "column": 0,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "Email sync age",
+        "programText": "data('grokbot.email.sync.age_seconds').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 32400.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 21600.0,
+              "lt": 32400.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 21600.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Email sync age",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_34>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_119>",
+        "column": 2,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "Calendar today",
+        "programText": "data('grokbot.cal.events_today').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Calendar today",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_119>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_82>",
+        "column": 4,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "Calendar next 7d",
+        "programText": "data('grokbot.cal.events_next7').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Calendar next 7d",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_82>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_99>",
+        "column": 6,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "New job matches",
+        "programText": "data('grokbot.jobs.new_matches').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "New job matches",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_99>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_102>",
+        "column": 8,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "eBay listings",
+        "programText": "data('grokbot.ebay.active_listings').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "eBay listings",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_102>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_105>",
+        "column": 10,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "eBay value",
+        "programText": "data('grokbot.ebay.current_value').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "eBay value",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": "$",
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_105>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_58>",
+        "column": 0,
+        "height": 2,
+        "row": 3,
+        "width": 6
+      },
+      "chart": {
+        "name": "Backup age vs 6h mean",
+        "programText": "a = data('grokbot.backup.age_hours')\na.publish('Age')\na.mean(over='6h').publish('6h mean')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "LineChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Age",
+              "label": "Age",
+              "paletteIndex": 5,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "h",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "6h mean",
+              "label": "6h mean",
+              "paletteIndex": 0,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "h",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_58>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_124>",
+        "column": 6,
+        "height": 2,
+        "row": 3,
+        "width": 6
+      },
+      "chart": {
+        "name": "Mail pile: unread, junk, attention",
+        "programText": "data('grokbot.email.unread_total').publish('Unread')\ndata('grokbot.email.junk_unread').publish('Junk')\ndata('grokbot.email.attention_count').publish('Attention')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "AreaChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Unread",
+              "label": "Unread",
+              "paletteIndex": 1,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Junk",
+              "label": "Junk",
+              "paletteIndex": 6,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Attention",
+              "label": "Attention",
+              "paletteIndex": 8,
+              "plotType": "LineChart",
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_124>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_97>",
+        "column": 0,
+        "height": 2,
+        "row": 5,
+        "width": 6
+      },
+      "chart": {
+        "name": "Routine age (seconds)",
+        "programText": "data('grokbot.routine.age_seconds').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 32400.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 21600.0,
+              "lt": 32400.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 21600.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "hideMissingValues": false,
+          "legendOptions": {
+            "fields": null
+          },
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Routine age (seconds)",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "sortBy": null,
+          "time": null,
+          "type": "List",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_97>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_48>",
+        "column": 6,
+        "height": 2,
+        "row": 5,
+        "width": 6
+      },
+      "chart": {
+        "name": "Routine age heatmap",
+        "programText": "data('grokbot.routine.age_seconds').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorRange": null,
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 32400.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 21600.0,
+              "lt": 32400.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 21600.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "groupBy": [
+            "routine"
+          ],
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": null,
+          "refreshInterval": null,
+          "sortDirection": "Ascending",
+          "sortProperty": null,
+          "time": null,
+          "timestampHidden": true,
+          "type": "Heatmap",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_48>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_125>",
+        "column": 0,
+        "height": 2,
+        "row": 7,
+        "width": 6
+      },
+      "chart": {
+        "name": "Routine age table",
+        "programText": "data('grokbot.routine.age_seconds').publish('v')",
+        "options": {
+          "columnSizes": null,
+          "groupBy": [
+            "routine"
+          ],
+          "groupBySort": "Descending",
+          "hideMissingValues": false,
+          "legendOptions": {
+            "fields": null
+          },
+          "maximumPrecision": 1,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Age (s)",
+              "label": "v",
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null
+            }
+          ],
+          "refreshInterval": null,
+          "sortBy": null,
+          "time": null,
+          "timestampHidden": false,
+          "type": "TableChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_125>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_14>",
+        "column": 6,
+        "height": 2,
+        "row": 7,
+        "width": 6
+      },
+      "chart": {
+        "name": "Jobs pipeline and eBay listings",
+        "programText": "data('grokbot.jobs.tracker.still_fits').publish('Fits')\ndata('grokbot.jobs.tracker.applied').publish('Applied')\ndata('grokbot.jobs.tracker.new').publish('New')\ndata('grokbot.ebay.active_listings').publish('eBay')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "ColumnChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Still fits",
+              "label": "Fits",
+              "paletteIndex": 14,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Applied",
+              "label": "Applied",
+              "paletteIndex": 1,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "New matches",
+              "label": "New",
+              "paletteIndex": 5,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "eBay listings",
+              "label": "eBay",
+              "paletteIndex": 11,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_14>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_27>",
+        "column": 0,
+        "height": 2,
+        "row": 9,
+        "width": 8
+      },
+      "chart": {
+        "name": "Sync ages: email, calendar, jobs, eBay (seconds)",
+        "programText": "data('grokbot.email.sync.age_seconds').publish('Email')\ndata('grokbot.cal.sync.age_seconds').publish('Calendar')\ndata('grokbot.jobs.run.age_seconds').publish('Jobs')\ndata('grokbot.ebay.sync.age_seconds').publish('eBay')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "LineChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Email",
+              "label": "Email",
+              "paletteIndex": 1,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Calendar",
+              "label": "Calendar",
+              "paletteIndex": 14,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Jobs",
+              "label": "Jobs",
+              "paletteIndex": 5,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "eBay",
+              "label": "eBay",
+              "paletteIndex": 11,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_27>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_89>",
+        "column": 8,
+        "height": 2,
+        "row": 9,
+        "width": 4
+      },
+      "chart": {
+        "name": "Ops detector events",
+        "programText": "events(eventType='*').publish('all')",
+        "options": {
+          "eventPublishLabelOptions": null,
+          "noDataOptions": null,
+          "time": null,
+          "type": "Event"
+        },
+        "description": null,
+        "id": "<CHART_ID_89>"
+      }
+    }
+  ]
+}

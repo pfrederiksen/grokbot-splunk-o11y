@@ -9,16 +9,17 @@ detector. It is a community sample, not affiliated with Splunk or xAI.
 
 You will end up with:
 
-- A stdlib Python emitter that posts one batched set of `grokbot.*` gauges
-  every five minutes
+- A Python emitter that sends one batched set of `grokbot.*` gauges every hour
+  via OpenTelemetry OTLP/HTTP (optional stdlib-only `--protocol signalfx` fallback)
 - A wrapper script that loads tokens from `chmod 600` files and never prints them
 - A Grok Bot routine that stays quiet unless **two consecutive** runs fail
 - A **Bot Health** dashboard plus detectors (emitter silent, disk high, memory
   high, stale sync), applied as code
+- Exported dashboard and detector JSON under [dashboards/](dashboards/) (a richer snapshot; `bin/apply_dashboards.py` remains the small Bot Health starter)
 
 ## Prerequisites
 
-- Python 3.10 or newer (standard library only; no `pip install`)
+- Python 3.10 or newer. The default OTLP path needs `pip install -r requirements-otel.txt` (a repo `.venv` is recommended). The legacy `--protocol signalfx` path is stdlib-only.
 - A Splunk Observability Cloud organization, including the [Free Edition](https://www.splunk.com/en_us/blog/observability/splunk-observability-cloud-free-edition.html) (up to 15 hosts)
 - An org **INGEST** token for the emitter and a separate org **API** token for dashboards
 
@@ -54,18 +55,56 @@ You will end up with:
        python3 bin/apply_dashboards.py --notify-email alerts@example.com
 
    Replace `alerts@example.com` with an address you control before a live apply.
-6. Schedule a 5-minute Grok Bot routine using the sample prompt in
-   [Setup](docs/setup.md#sample-grok-bot-routine).
+6. Schedule an **hourly** Grok Bot routine (for example around :07) using the sample prompt in
+   [Setup](docs/setup.md#sample-grok-bot-routine). Install the OTel SDK first (`pip install -r requirements-otel.txt`, preferably into `.venv`).
+
+
+## OpenTelemetry architecture
+
+Production ingest is **OpenTelemetry OTLP/HTTP**. The emitter sends the same
+`grokbot.*` gauges (same names, same `host` dimension) to
+`https://ingest.<realm>.signalfx.com/v2/datapoint/otlp` with the org **INGEST**
+token in the `X-SF-TOKEN` header. Do not also POST to `/v2/datapoint` — that
+would double custom MTS. The silent-emitter detector is tuned for an
+**hourly** heartbeat (no data for 2 hours 15 minutes), not a 5-minute one.
+
+```text
+collectors -> bin/emit.py  (default --protocol otlp)
+                 |-- OTLP/HTTP metrics  ->  /v2/datapoint/otlp
+                 |-- OTLP/HTTP traces   ->  /v2/trace/otlp
+                 |                      (one trace per run, span per collector)
+                 `-- optional local collector: otel/collector.yaml
+                     (localhost :4318, filter ^grokbot\\..*)
+```
+
+Install the SDK, preferably into a repo virtualenv that is not a cache dir:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-otel.txt
+bin/run_emit.sh --dry-run
+bin/run_emit.sh
+```
+
+`--protocol signalfx` remains only as a legacy fallback. A collector is
+optional; the default path talks to Splunk ingest directly. Full write-up:
+[docs/otel.md](docs/otel.md).
+
+Do not enable a default host-metrics collector on a Free or host-based plan
+until you have watched Subscription Usage. Resource attributes are kept off
+the metric payload (only the original dimensions, typically `host`) so MTS
+identities stay stable.
 
 ## Guides
 
 | Guide | What it covers |
 | --- | --- |
 | [Concepts](docs/concepts.md) | Realms, ingest vs API tokens, expiry, Free Edition limits, MTS |
-| [Setup](docs/setup.md) | Token files, the emitter, the 5-minute routine prompt |
+| [Setup](docs/setup.md) | Token files, the emitter, the hourly routine prompt |
 | [Dashboards and detectors](docs/dashboards-and-detectors.md) | Bot Health as code, SignalFlow, `--dry-run` |
 | [Best practices](docs/best-practices.md) | Cardinality, naming, heartbeats, token hygiene, MTS budget |
 | [Ideas](docs/ideas.md) | Optional hobby metrics (golf, birds, home, email) with fake data |
+| [OpenTelemetry](docs/otel.md) | Optional OTLP/HTTP path and example collector config |
 
 ## Tests
 
@@ -74,7 +113,7 @@ python3 -m unittest discover -s tests -v
 ```
 
 CI runs the same tests on Python 3.10 through 3.13 and runs gitleaks on the
-history. There are no third-party runtime dependencies.
+history. OTLP helper tests run without the SDK installed. A live emit needs `requirements-otel.txt`.
 
 ## License
 

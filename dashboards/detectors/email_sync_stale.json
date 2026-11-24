@@ -1,0 +1,28 @@
+{
+  "id": "<DETECTOR_ID_EMAIL_SYNC_STALE>",
+  "name": "Email sync stale",
+  "description": "Email sync age above 9 hours for 1 hour 15 minutes.",
+  "programText": "signal = data('grokbot.email.sync.age_seconds')\ndetect(when(signal > 32400, lasting='1h15m')).publish('Email sync stale')\n",
+  "rules": [
+    {
+      "detectLabel": "Email sync stale",
+      "disabled": false,
+      "notifications": [
+        {
+          "type": "Email",
+          "bcc": [],
+          "cc": [],
+          "email": "alerts@example.com"
+        }
+      ],
+      "parameterizedBody": "Email sync stale is {{status}} at {{timestamp}}.",
+      "parameterizedSubject": "Email sync stale triggered",
+      "severity": "Warning"
+    }
+  ],
+  "maxDelay": 0,
+  "minDelay": null,
+  "timezone": null,
+  "tags": [],
+  "detectorOrigin": "Standard"
+}

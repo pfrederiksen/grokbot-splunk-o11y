@@ -1,0 +1,597 @@
+{
+  "id": "<DASHBOARD_ID_BIRDS>",
+  "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>",
+  "description": "BirdWeather detections and species, with rate-of-change, 1-hour comparison, and sync freshness.",
+  "filters": {
+    "sources": [],
+    "time": null,
+    "variables": []
+  },
+  "eventOverlays": [
+    {
+      "eventColorIndex": 17,
+      "eventLine": true,
+      "eventSignal": {
+        "detectorId": "<DETECTOR_ID_BIRDS_SYNC_STALE>",
+        "eventSearchText": "Birds sync stale",
+        "eventType": "detectorEvents"
+      },
+      "label": null,
+      "overlayId": "<OVERLAY_ID_7>",
+      "sources": []
+    }
+  ],
+  "charts": [
+    {
+      "layout": {
+        "chartId": "<CHART_ID_113>",
+        "column": 0,
+        "height": 1,
+        "row": 0,
+        "width": 12
+      },
+      "chart": {
+        "name": "Birds header",
+        "programText": "",
+        "options": {
+          "markdown": "# 🐦 Birds\n\nToday's detections, unique species, and how fresh the BirdWeather sync is (stale after 2 hours).\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) · [Bot Health](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_HEALTH>) · [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) · [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) · **Birds** · [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) · [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\n[Open the Grok Bot group](https://app.<REALM>.signalfx.com/#/dashboard-group/<GROUP_ID>) · green healthy · gold watch · red act · sparklines follow the dashboard time window.",
+          "type": "Text"
+        },
+        "description": null,
+        "id": "<CHART_ID_113>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_80>",
+        "column": 0,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Detections today",
+        "programText": "data('grokbot.birds.detections.today').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Detections today",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_80>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_91>",
+        "column": 2,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Species today",
+        "programText": "data('grokbot.birds.species.today').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Species today",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_91>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_93>",
+        "column": 4,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Detections 7d",
+        "programText": "data('grokbot.birds.detections.7d').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Detections 7d",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_93>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_75>",
+        "column": 6,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Species YTD",
+        "programText": "data('grokbot.birds.species.ytd').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Species YTD",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_75>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_90>",
+        "column": 8,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Library rows",
+        "programText": "data('grokbot.birds.db.rows').publish('v')",
+        "options": {
+          "colorBy": "Dimension",
+          "colorScale": null,
+          "colorScale2": null,
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Library rows",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_90>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_57>",
+        "column": 10,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Sync age",
+        "programText": "data('grokbot.birds.sync.age_seconds').publish('v')",
+        "options": {
+          "colorBy": "Scale",
+          "colorScale": null,
+          "colorScale2": [
+            {
+              "gt": null,
+              "gte": 7200.0,
+              "lt": null,
+              "lte": null,
+              "paletteIndex": 16
+            },
+            {
+              "gt": null,
+              "gte": 3600.0,
+              "lt": 7200.0,
+              "lte": null,
+              "paletteIndex": 17
+            },
+            {
+              "gt": null,
+              "gte": null,
+              "lt": 3600.0,
+              "lte": null,
+              "paletteIndex": 14
+            }
+          ],
+          "maximumPrecision": 0,
+          "noDataOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Sync age",
+              "label": "v",
+              "paletteIndex": null,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "refreshInterval": 0,
+          "secondaryVisualization": "Sparkline",
+          "showSparkLine": false,
+          "time": null,
+          "timestampHidden": false,
+          "type": "SingleValue",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_57>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_26>",
+        "column": 0,
+        "height": 2,
+        "row": 2,
+        "width": 8
+      },
+      "chart": {
+        "name": "Today's detections vs 1h ago, plus new-since-last-sample",
+        "programText": "d = data('grokbot.birds.detections.today')\nd.publish('Today')\nd.timeshift('1h').publish('1h ago')\nd.delta().publish('New')\nd.mean(over='6h').publish('6h mean')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "AreaChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Today",
+              "label": "Today",
+              "paletteIndex": 15,
+              "plotType": "AreaChart",
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "1h ago",
+              "label": "1h ago",
+              "paletteIndex": 0,
+              "plotType": "LineChart",
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "New since last",
+              "label": "New",
+              "paletteIndex": 5,
+              "plotType": "ColumnChart",
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "6h mean",
+              "label": "6h mean",
+              "paletteIndex": 2,
+              "plotType": "LineChart",
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_26>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_37>",
+        "column": 8,
+        "height": 2,
+        "row": 2,
+        "width": 4
+      },
+      "chart": {
+        "name": "Species today (columns)",
+        "programText": "data('grokbot.birds.species.today').publish('Species')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "ColumnChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Species",
+              "label": "Species",
+              "paletteIndex": 14,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_37>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_85>",
+        "column": 0,
+        "height": 2,
+        "row": 4,
+        "width": 6
+      },
+      "chart": {
+        "name": "7-day detections and YTD species (dual axis)",
+        "programText": "data('grokbot.birds.detections.7d').publish('7d')\ndata('grokbot.birds.species.ytd').publish('YTD')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": [
+            {
+              "highWatermark": null,
+              "highWatermarkLabel": null,
+              "label": "Detections (7d)",
+              "lowWatermark": null,
+              "lowWatermarkLabel": null,
+              "max": null,
+              "min": null
+            },
+            {
+              "highWatermark": null,
+              "highWatermarkLabel": null,
+              "label": "Species YTD",
+              "lowWatermark": null,
+              "lowWatermarkLabel": null,
+              "max": null,
+              "min": null
+            }
+          ],
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "LineChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "7d detections",
+              "label": "7d",
+              "paletteIndex": 15,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "Species YTD",
+              "label": "YTD",
+              "paletteIndex": 14,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": null,
+              "valueUnit": null,
+              "yAxis": 1
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_85>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_120>",
+        "column": 6,
+        "height": 2,
+        "row": 4,
+        "width": 6
+      },
+      "chart": {
+        "name": "Sync age (seconds)",
+        "programText": "a = data('grokbot.birds.sync.age_seconds')\na.publish('Age')\na.mean(over='6h').publish('6h avg')",
+        "options": {
+          "areaChartOptions": null,
+          "axes": null,
+          "axisPrecision": 1,
+          "colorBy": "Dimension",
+          "defaultPlotType": "LineChart",
+          "eventPublishLabelOptions": null,
+          "histogramChartOptions": null,
+          "includeZero": true,
+          "legendOptions": null,
+          "lineChartOptions": null,
+          "noDataOptions": null,
+          "onChartLegendOptions": null,
+          "programOptions": null,
+          "publishLabelOptions": [
+            {
+              "displayName": "Age",
+              "label": "Age",
+              "paletteIndex": 6,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            },
+            {
+              "displayName": "6h avg",
+              "label": "6h avg",
+              "paletteIndex": 0,
+              "plotType": null,
+              "valuePrefix": null,
+              "valueSuffix": "s",
+              "valueUnit": null,
+              "yAxis": 0
+            }
+          ],
+          "showEventLines": true,
+          "stacked": false,
+          "time": null,
+          "type": "TimeSeriesChart",
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_120>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_46>",
+        "column": 0,
+        "height": 2,
+        "row": 6,
+        "width": 12
+      },
+      "chart": {
+        "name": "Birds detector events",
+        "programText": "events(eventType='Birds sync stale').publish('stale')",
+        "options": {
+          "eventPublishLabelOptions": null,
+          "noDataOptions": null,
+          "time": null,
+          "type": "Event"
+        },
+        "description": null,
+        "id": "<CHART_ID_46>"
+      }
+    }
+  ]
+}
