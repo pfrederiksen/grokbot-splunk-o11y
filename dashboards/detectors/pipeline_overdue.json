@@ -1,0 +1,28 @@
+{
+  "id": "<DETECTOR_ID_PIPELINE_OVERDUE>",
+  "name": "Pipeline overdue",
+  "description": "A scheduled pipeline (calendar, finance, home, jobs, trader heartbeat, trading status sync) has missed its schedule: hours since last success exceed the schedule budget (latest run that should have finished + allowance) for 2 hourly samples. Email, birds and backup have their own detectors.",
+  "programText": "r = data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'calendar', 'finance', 'home', 'jobs', 'trader', 'ls_trading'))\ndetect(when(r >= 1, lasting='1h15m')).publish('Pipeline overdue')\n",
+  "rules": [
+    {
+      "detectLabel": "Pipeline overdue",
+      "disabled": false,
+      "notifications": [
+        {
+          "type": "Email",
+          "email": "alerts@example.com",
+          "cc": [],
+          "bcc": []
+        }
+      ],
+      "parameterizedSubject": "Grok Bot pipeline overdue: {{dimensions.pipeline}}",
+      "parameterizedBody": "{{dimensions.pipeline}} is overdue ({{inputs.r.value}}x its schedule budget). See the Bot Ops dashboard runbook: calendar, finance, home, jobs, trader, and ls_trading each have a refresh step.",
+      "severity": "Warning"
+    }
+  ],
+  "maxDelay": 0,
+  "minDelay": null,
+  "timezone": null,
+  "tags": [],
+  "detectorOrigin": "Standard"
+}

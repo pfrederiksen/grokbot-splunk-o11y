@@ -1,17 +1,13 @@
 {
   "id": "<DASHBOARD_ID_TRADING>",
   "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>",
-  "description": "Account value, mix, baseline P&L and scorecard — with 1-hour comparisons and dual axes.",
-  "filters": {
-    "sources": [],
-    "time": null,
-    "variables": []
-  },
+  "description": "Trading account risk headroom and P&L. Read-only sample of action-first tiles.",
+  "filters": null,
   "eventOverlays": [],
   "charts": [
     {
       "layout": {
-        "chartId": "<CHART_ID_61>",
+        "chartId": "<CHART_ID_43>",
         "column": 0,
         "height": 1,
         "row": 0,
@@ -21,16 +17,16 @@
         "name": "Trading header",
         "programText": "",
         "options": {
-          "markdown": "# 📈 Trading\n\nRobinhood account pulse, allocation mix, and the desk scorecard. Deltas are versus one hour ago until a fuller history accumulates.\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) · [Bot Health](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_HEALTH>) · [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) · **Trading** · [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) · [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) · [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\n[Open the Grok Bot group](https://app.<REALM>.signalfx.com/#/dashboard-group/<GROUP_ID>) · green healthy · gold watch · red act · sparklines follow the dashboard time window.",
-          "type": "Text"
+          "type": "Text",
+          "markdown": "# Trading\n\nLead numbers: account value, dollars of daily-loss headroom, and dollars of weekly-loss headroom. Wire these to whatever trading snapshot your bot already writes.\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) \u00b7 [Bot Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>) \u00b7 **Trading** \u00b7 [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
         },
         "description": null,
-        "id": "<CHART_ID_61>"
+        "id": "<CHART_ID_43>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_117>",
+        "chartId": "<CHART_ID_44>",
         "column": 0,
         "height": 1,
         "row": 1,
@@ -40,443 +36,506 @@
         "name": "Account value",
         "programText": "data('grokbot.trade.account_value').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 2,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Account value",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Account value",
+              "valuePrefix": "$"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_117>"
+        "id": "<CHART_ID_44>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_116>",
+        "chartId": "<CHART_ID_45>",
         "column": 3,
         "height": 1,
         "row": 1,
         "width": 3
       },
       "chart": {
-        "name": "Cash",
-        "programText": "data('grokbot.trade.cash').publish('v')",
+        "name": "Day P&L ($)",
+        "programText": "data('grokbot.trade.day_pnl_usd').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 2,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Cash",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Day P&L ($)",
+              "valuePrefix": "$"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 0
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 0
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_116>"
+        "id": "<CHART_ID_45>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_81>",
+        "chartId": "<CHART_ID_46>",
         "column": 6,
         "height": 1,
         "row": 1,
         "width": 3
       },
       "chart": {
-        "name": "P&L vs baseline",
-        "programText": "data('grokbot.trade.pnl_vs_baseline.usd').publish('v')",
+        "name": "Daily-loss headroom",
+        "programText": "data('grokbot.trade.day_loss_headroom_usd').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "P&L vs baseline",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Daily-loss headroom",
+              "valuePrefix": "$"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 150
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 150,
+              "lt": 400
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 400
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_81>"
+        "id": "<CHART_ID_46>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_59>",
+        "chartId": "<CHART_ID_47>",
         "column": 9,
         "height": 1,
         "row": 1,
         "width": 3
       },
       "chart": {
-        "name": "P&L % vs baseline",
-        "programText": "data('grokbot.trade.pnl_vs_baseline.pct').publish('v')",
+        "name": "Weekly-loss headroom",
+        "programText": "data('grokbot.trade.week_loss_headroom_usd').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "P&L % vs baseline",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Weekly-loss headroom",
+              "valuePrefix": "$"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 300
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 300,
+              "lt": 800
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 800
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_59>"
+        "id": "<CHART_ID_47>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_38>",
+        "chartId": "<CHART_ID_48>",
         "column": 0,
         "height": 1,
         "row": 2,
-        "width": 3
+        "width": 2
       },
       "chart": {
-        "name": "Win rate",
-        "programText": "data('grokbot.trade.scorecard.win_rate').publish('v')",
+        "name": "New entries allowed (1 = yes)",
+        "programText": "data('grokbot.trade.entries_allowed').publish('v')",
         "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "New entries allowed (1 = yes)"
+            }
+          ],
           "colorBy": "Scale",
-          "colorScale": null,
           "colorScale2": [
             {
-              "gt": null,
-              "gte": 55.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
+              "paletteIndex": 16,
+              "lt": 1
             },
             {
-              "gt": null,
-              "gte": 40.0,
-              "lt": 55.0,
-              "lte": null,
-              "paletteIndex": 17
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 40.0,
-              "lte": null,
-              "paletteIndex": 16
+              "paletteIndex": 14,
+              "gte": 1
             }
-          ],
-          "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Win rate",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Linear",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_38>"
+        "id": "<CHART_ID_48>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_42>",
-        "column": 3,
+        "chartId": "<CHART_ID_49>",
+        "column": 2,
         "height": 1,
         "row": 2,
-        "width": 3
+        "width": 2
       },
       "chart": {
-        "name": "Avg R",
-        "programText": "data('grokbot.trade.scorecard.avg_r').publish('v')",
+        "name": "Full-loss streak",
+        "programText": "data('grokbot.trade.full_loss_streak').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 2,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Avg R",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "R",
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Full-loss streak"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 2
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 2,
+              "lt": 4
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 4
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_42>"
+        "id": "<CHART_ID_49>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_115>",
+        "chartId": "<CHART_ID_50>",
+        "column": 4,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "Week P&L ($)",
+        "programText": "data('grokbot.trade.week_pnl_usd').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 2,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Week P&L ($)",
+              "valuePrefix": "$"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 0
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 0
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_50>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_51>",
         "column": 6,
         "height": 1,
         "row": 2,
-        "width": 3
+        "width": 2
+      },
+      "chart": {
+        "name": "Drawdown from high-water mark",
+        "programText": "data('grokbot.trade.drawdown_from_hwm_pct').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 1,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Drawdown from high-water mark",
+              "valueSuffix": "%"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 10
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 10,
+              "lt": 20
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 20
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_51>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_52>",
+        "column": 8,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "Open risk ($)",
+        "programText": "data('grokbot.trade.open_risk_usd').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Open risk ($)",
+              "valuePrefix": "$"
+            }
+          ],
+          "colorBy": "Dimension"
+        },
+        "description": null,
+        "id": "<CHART_ID_52>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_53>",
+        "column": 10,
+        "height": 1,
+        "row": 2,
+        "width": 2
       },
       "chart": {
         "name": "Open positions",
         "programText": "data('grokbot.trade.positions.count').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Open positions",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Open positions"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 4
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 4,
+              "lt": 5
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 5
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_115>"
+        "id": "<CHART_ID_53>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_36>",
-        "column": 9,
-        "height": 1,
-        "row": 2,
-        "width": 3
-      },
-      "chart": {
-        "name": "1h account change",
-        "programText": "cur = data('grokbot.trade.account_value')\n(cur - cur.timeshift('1h')).publish('v')",
-        "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "1h account change",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_36>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_56>",
+        "chartId": "<CHART_ID_54>",
         "column": 0,
         "height": 2,
         "row": 3,
         "width": 8
       },
       "chart": {
-        "name": "Account value now vs 1h ago, plus hourly change",
-        "programText": "cur = data('grokbot.trade.account_value')\ncur.publish('Now')\ncur.timeshift('1h').publish('1h ago')\ncur.mean(over='6h').publish('6h avg')\n(cur - cur.timeshift('1h')).publish('Delta')",
+        "name": "Account value",
+        "programText": "data('grokbot.trade.account_value').publish('Account')",
         "options": {
-          "areaChartOptions": null,
-          "axes": [
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "USD",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            },
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "1h change",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            }
-          ],
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
+          "type": "TimeSeriesChart",
           "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
+          "stacked": false,
+          "includeZero": false,
+          "axisPrecision": 0,
+          "showEventLines": true,
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_54>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_55>",
+        "column": 8,
+        "height": 2,
+        "row": 3,
+        "width": 4
+      },
+      "chart": {
+        "name": "Loss headroom: daily vs weekly ($)",
+        "programText": "data('grokbot.trade.day_loss_headroom_usd').publish('Daily')\ndata('grokbot.trade.week_loss_headroom_usd').publish('Weekly')",
+        "options": {
+          "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
           "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
+          "axisPrecision": 0,
+          "showEventLines": true,
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_55>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_56>",
+        "column": 0,
+        "height": 1,
+        "row": 5,
+        "width": 3
+      },
+      "chart": {
+        "name": "Scorecard win rate",
+        "programText": "(data('grokbot.trade.scorecard.win_rate') * 100).publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Now",
-              "label": "Now",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "1h ago",
-              "label": "1h ago",
-              "paletteIndex": 0,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "6h avg",
-              "label": "6h avg",
-              "paletteIndex": 2,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "1h change",
-              "label": "Delta",
-              "paletteIndex": 5,
-              "plotType": "ColumnChart",
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 1
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Scorecard win rate",
+              "valueSuffix": "%"
             }
           ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
-          "type": "TimeSeriesChart",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 40
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 40,
+              "lt": 55
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 55
+            }
+          ]
         },
         "description": null,
         "id": "<CHART_ID_56>"
@@ -484,212 +543,150 @@
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_73>",
-        "column": 8,
-        "height": 2,
-        "row": 3,
-        "width": 4
+        "chartId": "<CHART_ID_57>",
+        "column": 3,
+        "height": 1,
+        "row": 5,
+        "width": 3
       },
       "chart": {
-        "name": "Options and cash share of the account",
-        "programText": "(data('grokbot.trade.options_value') / data('grokbot.trade.account_value') * 100).publish('Options %')\n(data('grokbot.trade.cash') / data('grokbot.trade.account_value') * 100).publish('Cash %')",
+        "name": "Scorecard average R",
+        "programText": "data('grokbot.trade.scorecard.avg_r').publish('v')",
         "options": {
-          "areaChartOptions": null,
-          "axes": null,
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 2,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Options",
-              "label": "Options %",
-              "paletteIndex": 5,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Cash",
-              "label": "Cash %",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Scorecard average R"
             }
           ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
-          "type": "TimeSeriesChart",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 0
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 0,
+              "lt": 0.3
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 0.3
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_73>"
+        "id": "<CHART_ID_57>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_111>",
+        "chartId": "<CHART_ID_58>",
+        "column": 6,
+        "height": 1,
+        "row": 5,
+        "width": 3
+      },
+      "chart": {
+        "name": "This week: expectancy (R)",
+        "programText": "data('grokbot.trade.week_expectancy_r').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 2,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "This week: expectancy (R)"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 0
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 0,
+              "lt": 0.3
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 0.3
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_58>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_59>",
+        "column": 9,
+        "height": 1,
+        "row": 5,
+        "width": 3
+      },
+      "chart": {
+        "name": "Cash",
+        "programText": "data('grokbot.trade.cash').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Cash",
+              "valuePrefix": "$"
+            }
+          ],
+          "colorBy": "Dimension"
+        },
+        "description": null,
+        "id": "<CHART_ID_59>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_60>",
         "column": 0,
         "height": 2,
-        "row": 5,
-        "width": 8
+        "row": 6,
+        "width": 12
       },
       "chart": {
-        "name": "Allocation mix (stacked)",
-        "programText": "data('grokbot.trade.cash').publish('Cash')\ndata('grokbot.trade.equity_value').publish('Equity')\ndata('grokbot.trade.options_value').publish('Options')\ndata('grokbot.trade.crypto_value').publish('Crypto')",
+        "name": "Exposure: cash vs options / equity / crypto ($)",
+        "programText": "data('grokbot.trade.cash').publish('Cash')\ndata('grokbot.trade.options_value').publish('Options')\ndata('grokbot.trade.equity_value').publish('Equity')\ndata('grokbot.trade.crypto_value').publish('Crypto')",
         "options": {
-          "areaChartOptions": null,
-          "axes": null,
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
+          "type": "TimeSeriesChart",
           "defaultPlotType": "AreaChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Cash",
-              "label": "Cash",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Equity",
-              "label": "Equity",
-              "paletteIndex": 1,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Options",
-              "label": "Options",
-              "paletteIndex": 5,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Crypto",
-              "label": "Crypto",
-              "paletteIndex": 11,
-              "plotType": null,
-              "valuePrefix": "$",
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "showEventLines": true,
           "stacked": true,
-          "time": null,
-          "type": "TimeSeriesChart",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_111>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_25>",
-        "column": 8,
-        "height": 2,
-        "row": 5,
-        "width": 4
-      },
-      "chart": {
-        "name": "Win rate and average R (dual axis)",
-        "programText": "data('grokbot.trade.scorecard.win_rate').publish('Win')\ndata('grokbot.trade.scorecard.avg_r').publish('AvgR')",
-        "options": {
-          "areaChartOptions": null,
-          "axes": [
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "Win %",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            },
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "R",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            }
-          ],
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
           "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Win rate",
-              "label": "Win",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Avg R",
-              "label": "AvgR",
-              "paletteIndex": 5,
-              "plotType": "ColumnChart",
-              "valuePrefix": null,
-              "valueSuffix": "R",
-              "valueUnit": null,
-              "yAxis": 1
-            }
-          ],
+          "axisPrecision": 0,
           "showEventLines": true,
-          "stacked": false,
-          "time": null,
-          "type": "TimeSeriesChart",
           "unitPrefix": "Metric"
         },
         "description": null,
-        "id": "<CHART_ID_25>"
+        "id": "<CHART_ID_60>"
       }
     }
   ]

@@ -1,9 +1,9 @@
 {
-  "detectors": [
-    {
+  "detectors": {
+    "Emitter silent": {
       "id": "<DETECTOR_ID_EMITTER_SILENT>",
       "name": "Emitter silent",
-      "description": "No grokbot.emitter.ok datapoints for 2 hours 15 minutes (hourly emitter around :07 PT; one missed run plus slack).",
+      "description": "No grokbot.emitter.ok datapoints for 2 hours 15 minutes (hourly emitter around :07; one missed run plus slack).",
       "programText": "from signalfx.detectors.not_reporting import not_reporting\nnot_reporting.detector(data('grokbot.emitter.ok'), '2h15m').publish('Emitter silent')\n",
       "rules": [
         {
@@ -12,13 +12,13 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "No grokbot.emitter.ok points for 2 hours 1 hour 15 minutes. The 5-minute emit routine may have stopped.",
           "parameterizedSubject": "Grok Bot emitter silent",
+          "parameterizedBody": "No grokbot.emitter.ok points for 2 hours 15 minutes, so the hourly emit routine has stopped or its export failed. Fix: run bin/run_emit.sh and read the one-line summary; confirm the routine is enabled and the OpenTelemetry SDK is installed.",
           "severity": "Critical"
         }
       ],
@@ -28,11 +28,11 @@
       "tags": [],
       "detectorOrigin": "Standard"
     },
-    {
+    "Box disk high": {
       "id": "<DETECTOR_ID_BOX_DISK_HIGH>",
       "name": "Box disk high",
-      "description": "Root disk above 85% for 1 hour 15 minutes (one hourly sample plus slack).",
-      "programText": "signal = data('grokbot.box.disk.pct')\ndetect(when(signal > 85, lasting='1h15m')).publish('Box disk high')\n",
+      "description": "Root (or GROKBOT_DISK_PATH) disk used percent stayed above 85 for 1 hour 15 minutes.",
+      "programText": "disk = data('grokbot.box.disk.pct').publish('signal')\ndetect(when(disk > 85, lasting='1h15m')).publish('Box disk high')\n",
       "rules": [
         {
           "detectLabel": "Box disk high",
@@ -40,13 +40,13 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "Box disk high is {{status}} at {{timestamp}}.",
-          "parameterizedSubject": "Box disk high triggered",
+          "parameterizedSubject": "Grok Bot box disk high",
+          "parameterizedBody": "Box disk is {{inputs.signal.value}}% (>85%). Fix: find large rebuildable caches and clear them; do not delete source data.",
           "severity": "Major"
         }
       ],
@@ -56,11 +56,11 @@
       "tags": [],
       "detectorOrigin": "Standard"
     },
-    {
+    "Box memory high": {
       "id": "<DETECTOR_ID_BOX_MEMORY_HIGH>",
       "name": "Box memory high",
-      "description": "Memory above 90% for 1 hour 15 minutes (one hourly sample plus slack).",
-      "programText": "signal = data('grokbot.box.mem.pct')\ndetect(when(signal > 90, lasting='1h15m')).publish('Box memory high')\n",
+      "description": "Memory used percent stayed above 90 for 1 hour 15 minutes.",
+      "programText": "mem = data('grokbot.box.mem.pct').publish('signal')\ndetect(when(mem > 90, lasting='1h15m')).publish('Box memory high')\n",
       "rules": [
         {
           "detectLabel": "Box memory high",
@@ -68,13 +68,13 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "Box memory high is {{status}} at {{timestamp}}.",
-          "parameterizedSubject": "Box memory high triggered",
+          "parameterizedSubject": "Grok Bot box memory high",
+          "parameterizedBody": "Box memory is {{inputs.signal.value}}% (>90%). Fix: look for runaway processes (for example leftover browsers or pollers).",
           "severity": "Major"
         }
       ],
@@ -84,11 +84,11 @@
       "tags": [],
       "detectorOrigin": "Standard"
     },
-    {
+    "HA down": {
       "id": "<DETECTOR_ID_HA_DOWN>",
       "name": "HA down",
-      "description": "Home Assistant reported down for 1 hour 15 minutes (hourly emitter).",
-      "programText": "signal = data('grokbot.home.ha.up')\ndetect(when(signal == 0, lasting='1h15m')).publish('HA down')\n",
+      "description": "Home Assistant reachability (grokbot.home.ha.up) stayed at 0 for two hourly samples.",
+      "programText": "up = data('grokbot.home.ha.up').publish('signal')\ndetect(when(up < 1, lasting='1h15m')).publish('HA down')\n",
       "rules": [
         {
           "detectLabel": "HA down",
@@ -96,14 +96,14 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "HA down is {{status}} at {{timestamp}}.",
-          "parameterizedSubject": "HA down triggered",
-          "severity": "Critical"
+          "parameterizedSubject": "Grok Bot Home Assistant down",
+          "parameterizedBody": "Home Assistant reports down for 2 hourly samples. Fix: rerun the home-status refresh; this detector is monitoring only and never sends Home Assistant commands.",
+          "severity": "Major"
         }
       ],
       "maxDelay": 0,
@@ -112,11 +112,11 @@
       "tags": [],
       "detectorOrigin": "Standard"
     },
-    {
+    "UniFi watchdog failing": {
       "id": "<DETECTOR_ID_UNIFI_WATCHDOG_FAILING>",
       "name": "UniFi watchdog failing",
-      "description": "UniFi watchdog not ok for 1 hour 15 minutes (hourly emitter).",
-      "programText": "signal = data('grokbot.home.unifi.watchdog_ok')\ndetect(when(signal == 0, lasting='1h15m')).publish('UniFi watchdog failing')\n",
+      "description": "Network extras-poller watchdog (grokbot.home.unifi.watchdog_ok) stayed at 0 for 1 hour 15 minutes.",
+      "programText": "ok = data('grokbot.home.unifi.watchdog_ok').publish('signal')\ndetect(when(ok < 1, lasting='1h15m')).publish('UniFi watchdog failing')\n",
       "rules": [
         {
           "detectLabel": "UniFi watchdog failing",
@@ -124,14 +124,14 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "UniFi watchdog failing is {{status}} at {{timestamp}}.",
-          "parameterizedSubject": "UniFi watchdog failing triggered",
-          "severity": "Major"
+          "parameterizedSubject": "Grok Bot network watchdog failing",
+          "parameterizedBody": "The network extras-poller watchdog is not ok. Fix: check the watchdog status file and restart the loop if it has stopped.",
+          "severity": "Warning"
         }
       ],
       "maxDelay": 0,
@@ -140,11 +140,11 @@
       "tags": [],
       "detectorOrigin": "Standard"
     },
-    {
+    "Backup failed or stale": {
       "id": "<DETECTOR_ID_BACKUP_FAILED_OR_STALE>",
       "name": "Backup failed or stale",
-      "description": "Backup success is 0, or backup age is over 25 hours, for 1 hour 15 minutes.",
-      "programText": "success = data('grokbot.backup.success')\nage = data('grokbot.backup.age_hours')\ndetect(when(success == 0, lasting='1h15m') or when(age > 25, lasting='1h15m')).publish('Backup failed or stale')\n",
+      "description": "Backup age (grokbot.backup.age_hours) stayed above 25 hours for 1 hour 15 minutes.",
+      "programText": "age = data('grokbot.backup.age_hours').publish('signal')\ndetect(when(age > 25, lasting='1h15m')).publish('Backup failed or stale')\n",
       "rules": [
         {
           "detectLabel": "Backup failed or stale",
@@ -152,13 +152,13 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "Backup failed or stale is {{status}} at {{timestamp}}.",
-          "parameterizedSubject": "Backup failed or stale triggered",
+          "parameterizedSubject": "Grok Bot backup failed or stale",
+          "parameterizedBody": "The nightly backup failed or is older than 25h. Fix: read the newest backup log and rerun the backup routine.",
           "severity": "Major"
         }
       ],
@@ -168,11 +168,11 @@
       "tags": [],
       "detectorOrigin": "Standard"
     },
-    {
+    "Email sync stale": {
       "id": "<DETECTOR_ID_EMAIL_SYNC_STALE>",
       "name": "Email sync stale",
-      "description": "Email sync age above 9 hours for 1 hour 15 minutes.",
-      "programText": "signal = data('grokbot.email.sync.age_seconds')\ndetect(when(signal > 32400, lasting='1h15m')).publish('Email sync stale')\n",
+      "description": "Email sync age exceeded 9 hours for 1 hour 15 minutes.",
+      "programText": "age = data('grokbot.email.sync.age_seconds').publish('signal')\ndetect(when(age > 32400, lasting='1h15m')).publish('Email sync stale')\n",
       "rules": [
         {
           "detectLabel": "Email sync stale",
@@ -180,13 +180,13 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "Email sync stale is {{status}} at {{timestamp}}.",
-          "parameterizedSubject": "Email sync stale triggered",
+          "parameterizedSubject": "Grok Bot email sync stale",
+          "parameterizedBody": "Email sync is older than 9h. Fix: rerun the email refresh routine; transient mailbox errors usually clear on retry.",
           "severity": "Warning"
         }
       ],
@@ -196,11 +196,11 @@
       "tags": [],
       "detectorOrigin": "Standard"
     },
-    {
+    "Birds sync stale": {
       "id": "<DETECTOR_ID_BIRDS_SYNC_STALE>",
       "name": "Birds sync stale",
-      "description": "Birds sync age above 2 hours for 1 hour 15 minutes.",
-      "programText": "signal = data('grokbot.birds.sync.age_seconds')\ndetect(when(signal > 7200, lasting='1h15m')).publish('Birds sync stale')\n",
+      "description": "Bird-detection sync stayed stale for two hourly samples.",
+      "programText": "age = data('grokbot.birds.sync.age_seconds').publish('signal')\ndetect(when(age > 7200, lasting='1h15m')).publish('Birds sync stale')\n",
       "rules": [
         {
           "detectLabel": "Birds sync stale",
@@ -208,14 +208,70 @@
           "notifications": [
             {
               "type": "Email",
-              "bcc": [],
+              "email": "alerts@example.com",
               "cc": [],
-              "email": "alerts@example.com"
+              "bcc": []
             }
           ],
-          "parameterizedBody": "Birds sync stale is {{status}} at {{timestamp}}.",
-          "parameterizedSubject": "Birds sync stale triggered",
+          "parameterizedSubject": "Grok Bot birds sync stale",
+          "parameterizedBody": "Bird-detection sync is older than 2h for 2 samples. Fix: rerun the hourly sync and check that its environment is intact.",
           "severity": "Warning"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    "Pipeline overdue": {
+      "id": "<DETECTOR_ID_PIPELINE_OVERDUE>",
+      "name": "Pipeline overdue",
+      "description": "A scheduled pipeline (calendar, finance, home, jobs, trader heartbeat, trading status sync) has missed its schedule: hours since last success exceed the schedule budget (latest run that should have finished + allowance) for 2 hourly samples. Email, birds and backup have their own detectors.",
+      "programText": "r = data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'calendar', 'finance', 'home', 'jobs', 'trader', 'ls_trading'))\ndetect(when(r >= 1, lasting='1h15m')).publish('Pipeline overdue')\n",
+      "rules": [
+        {
+          "detectLabel": "Pipeline overdue",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "email": "alerts@example.com",
+              "cc": [],
+              "bcc": []
+            }
+          ],
+          "parameterizedSubject": "Grok Bot pipeline overdue: {{dimensions.pipeline}}",
+          "parameterizedBody": "{{dimensions.pipeline}} is overdue ({{inputs.r.value}}x its schedule budget). See the Bot Ops dashboard runbook: calendar, finance, home, jobs, trader, and ls_trading each have a refresh step.",
+          "severity": "Warning"
+        }
+      ],
+      "maxDelay": 0,
+      "minDelay": null,
+      "timezone": null,
+      "tags": [],
+      "detectorOrigin": "Standard"
+    },
+    "Emitter collector failing": {
+      "id": "<DETECTOR_ID_EMITTER_COLLECTOR_FAILING>",
+      "name": "Emitter collector failing",
+      "description": "One emit.py collector raised an error on 2 consecutive hourly runs (its source file is missing or malformed). Other collectors keep reporting.",
+      "programText": "c = data('grokbot.collector.ok')\ndetect(when(c < 1, lasting='1h15m')).publish('Emitter collector failing')\n",
+      "rules": [
+        {
+          "detectLabel": "Emitter collector failing",
+          "disabled": false,
+          "notifications": [
+            {
+              "type": "Email",
+              "email": "alerts@example.com",
+              "cc": [],
+              "bcc": []
+            }
+          ],
+          "parameterizedSubject": "Grok Bot emit collector failing: {{dimensions.collector}}",
+          "parameterizedBody": "Collector {{dimensions.collector}} failed on consecutive emits. Fix: run python3 bin/emit.py --dry-run and look at sources_fail; the error type is on the collector span in APM (service grokbot-emitter).",
+          "severity": "Minor"
         }
       ],
       "maxDelay": 0,
@@ -224,5 +280,5 @@
       "tags": [],
       "detectorOrigin": "Standard"
     }
-  ]
+  }
 }

@@ -1,0 +1,28 @@
+{
+  "id": "<DETECTOR_ID_EMITTER_COLLECTOR_FAILING>",
+  "name": "Emitter collector failing",
+  "description": "One emit.py collector raised an error on 2 consecutive hourly runs (its source file is missing or malformed). Other collectors keep reporting.",
+  "programText": "c = data('grokbot.collector.ok')\ndetect(when(c < 1, lasting='1h15m')).publish('Emitter collector failing')\n",
+  "rules": [
+    {
+      "detectLabel": "Emitter collector failing",
+      "disabled": false,
+      "notifications": [
+        {
+          "type": "Email",
+          "email": "alerts@example.com",
+          "cc": [],
+          "bcc": []
+        }
+      ],
+      "parameterizedSubject": "Grok Bot emit collector failing: {{dimensions.collector}}",
+      "parameterizedBody": "Collector {{dimensions.collector}} failed on consecutive emits. Fix: run python3 bin/emit.py --dry-run and look at sources_fail; the error type is on the collector span in APM (service grokbot-emitter).",
+      "severity": "Minor"
+    }
+  ],
+  "maxDelay": 0,
+  "minDelay": null,
+  "timezone": null,
+  "tags": [],
+  "detectorOrigin": "Standard"
+}

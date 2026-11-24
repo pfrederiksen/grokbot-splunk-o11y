@@ -1,8 +1,8 @@
 {
   "id": "<DETECTOR_ID_BIRDS_SYNC_STALE>",
   "name": "Birds sync stale",
-  "description": "Birds sync age above 2 hours for 1 hour 15 minutes.",
-  "programText": "signal = data('grokbot.birds.sync.age_seconds')\ndetect(when(signal > 7200, lasting='1h15m')).publish('Birds sync stale')\n",
+  "description": "Bird-detection sync stayed stale for two hourly samples.",
+  "programText": "age = data('grokbot.birds.sync.age_seconds').publish('signal')\ndetect(when(age > 7200, lasting='1h15m')).publish('Birds sync stale')\n",
   "rules": [
     {
       "detectLabel": "Birds sync stale",
@@ -10,13 +10,13 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "Birds sync stale is {{status}} at {{timestamp}}.",
-      "parameterizedSubject": "Birds sync stale triggered",
+      "parameterizedSubject": "Grok Bot birds sync stale",
+      "parameterizedBody": "Bird-detection sync is older than 2h for 2 samples. Fix: rerun the hourly sync and check that its environment is intact.",
       "severity": "Warning"
     }
   ],

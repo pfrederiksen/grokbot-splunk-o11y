@@ -1,7 +1,7 @@
 {
   "id": "<DETECTOR_ID_EMITTER_SILENT>",
   "name": "Emitter silent",
-  "description": "No grokbot.emitter.ok datapoints for 2 hours 15 minutes (hourly emitter around :07 PT; one missed run plus slack).",
+  "description": "No grokbot.emitter.ok datapoints for 2 hours 15 minutes (hourly emitter around :07; one missed run plus slack).",
   "programText": "from signalfx.detectors.not_reporting import not_reporting\nnot_reporting.detector(data('grokbot.emitter.ok'), '2h15m').publish('Emitter silent')\n",
   "rules": [
     {
@@ -10,13 +10,13 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "No grokbot.emitter.ok points for 2 hours 1 hour 15 minutes. The 5-minute emit routine may have stopped.",
       "parameterizedSubject": "Grok Bot emitter silent",
+      "parameterizedBody": "No grokbot.emitter.ok points for 2 hours 15 minutes, so the hourly emit routine has stopped or its export failed. Fix: run bin/run_emit.sh and read the one-line summary; confirm the routine is enabled and the OpenTelemetry SDK is installed.",
       "severity": "Critical"
     }
   ],

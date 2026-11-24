@@ -1,8 +1,8 @@
 {
   "id": "<DETECTOR_ID_BACKUP_FAILED_OR_STALE>",
   "name": "Backup failed or stale",
-  "description": "Backup success is 0, or backup age is over 25 hours, for 1 hour 15 minutes.",
-  "programText": "success = data('grokbot.backup.success')\nage = data('grokbot.backup.age_hours')\ndetect(when(success == 0, lasting='1h15m') or when(age > 25, lasting='1h15m')).publish('Backup failed or stale')\n",
+  "description": "Backup age (grokbot.backup.age_hours) stayed above 25 hours for 1 hour 15 minutes.",
+  "programText": "age = data('grokbot.backup.age_hours').publish('signal')\ndetect(when(age > 25, lasting='1h15m')).publish('Backup failed or stale')\n",
   "rules": [
     {
       "detectLabel": "Backup failed or stale",
@@ -10,13 +10,13 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "Backup failed or stale is {{status}} at {{timestamp}}.",
-      "parameterizedSubject": "Backup failed or stale triggered",
+      "parameterizedSubject": "Grok Bot backup failed or stale",
+      "parameterizedBody": "The nightly backup failed or is older than 25h. Fix: read the newest backup log and rerun the backup routine.",
       "severity": "Major"
     }
   ],

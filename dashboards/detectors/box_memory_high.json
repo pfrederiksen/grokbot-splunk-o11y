@@ -1,8 +1,8 @@
 {
   "id": "<DETECTOR_ID_BOX_MEMORY_HIGH>",
   "name": "Box memory high",
-  "description": "Memory above 90% for 1 hour 15 minutes (one hourly sample plus slack).",
-  "programText": "signal = data('grokbot.box.mem.pct')\ndetect(when(signal > 90, lasting='1h15m')).publish('Box memory high')\n",
+  "description": "Memory used percent stayed above 90 for 1 hour 15 minutes.",
+  "programText": "mem = data('grokbot.box.mem.pct').publish('signal')\ndetect(when(mem > 90, lasting='1h15m')).publish('Box memory high')\n",
   "rules": [
     {
       "detectLabel": "Box memory high",
@@ -10,13 +10,13 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "Box memory high is {{status}} at {{timestamp}}.",
-      "parameterizedSubject": "Box memory high triggered",
+      "parameterizedSubject": "Grok Bot box memory high",
+      "parameterizedBody": "Box memory is {{inputs.signal.value}}% (>90%). Fix: look for runaway processes (for example leftover browsers or pollers).",
       "severity": "Major"
     }
   ],

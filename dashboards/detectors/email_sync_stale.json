@@ -1,8 +1,8 @@
 {
   "id": "<DETECTOR_ID_EMAIL_SYNC_STALE>",
   "name": "Email sync stale",
-  "description": "Email sync age above 9 hours for 1 hour 15 minutes.",
-  "programText": "signal = data('grokbot.email.sync.age_seconds')\ndetect(when(signal > 32400, lasting='1h15m')).publish('Email sync stale')\n",
+  "description": "Email sync age exceeded 9 hours for 1 hour 15 minutes.",
+  "programText": "age = data('grokbot.email.sync.age_seconds').publish('signal')\ndetect(when(age > 32400, lasting='1h15m')).publish('Email sync stale')\n",
   "rules": [
     {
       "detectLabel": "Email sync stale",
@@ -10,13 +10,13 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "Email sync stale is {{status}} at {{timestamp}}.",
-      "parameterizedSubject": "Email sync stale triggered",
+      "parameterizedSubject": "Grok Bot email sync stale",
+      "parameterizedBody": "Email sync is older than 9h. Fix: rerun the email refresh routine; transient mailbox errors usually clear on retry.",
       "severity": "Warning"
     }
   ],

@@ -1,8 +1,8 @@
 {
   "id": "<DETECTOR_ID_UNIFI_WATCHDOG_FAILING>",
   "name": "UniFi watchdog failing",
-  "description": "UniFi watchdog not ok for 1 hour 15 minutes (hourly emitter).",
-  "programText": "signal = data('grokbot.home.unifi.watchdog_ok')\ndetect(when(signal == 0, lasting='1h15m')).publish('UniFi watchdog failing')\n",
+  "description": "Network extras-poller watchdog (grokbot.home.unifi.watchdog_ok) stayed at 0 for 1 hour 15 minutes.",
+  "programText": "ok = data('grokbot.home.unifi.watchdog_ok').publish('signal')\ndetect(when(ok < 1, lasting='1h15m')).publish('UniFi watchdog failing')\n",
   "rules": [
     {
       "detectLabel": "UniFi watchdog failing",
@@ -10,14 +10,14 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "UniFi watchdog failing is {{status}} at {{timestamp}}.",
-      "parameterizedSubject": "UniFi watchdog failing triggered",
-      "severity": "Major"
+      "parameterizedSubject": "Grok Bot network watchdog failing",
+      "parameterizedBody": "The network extras-poller watchdog is not ok. Fix: check the watchdog status file and restart the loop if it has stopped.",
+      "severity": "Warning"
     }
   ],
   "maxDelay": 0,

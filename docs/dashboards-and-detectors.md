@@ -89,4 +89,13 @@ repo). Definitions are in `bin/apply_dashboards.py` and are covered by
 
 ## Richer dashboard snapshot
 
-JSON under [`dashboards/`](../dashboards/) is an export of a fuller dashboard set (Overview, Bot Health, and topic boards) that uses SingleValue sparklines, lists, heatmaps, tables, event feeds, and detector overlays. `bin/apply_dashboards.py` is still the small, idempotent Bot Health starter covered by the tests above.
+JSON under [`dashboards/`](../dashboards/) is an export of the v3 "usefulness" layout: an **Overview / Mission Control** board that leads with a needs-attention row, a **Bot Ops** board with the schedule runbook and collector traces, plus topic boards (Trading, Golf, Birds, Home, Ops). Charts use SingleValue sparklines, lists, heatmaps, tables, event feeds, and detector overlays. IDs and app URLs in the JSON are placeholders (`<DASHBOARD_ID_BOT_OPS>`, `https://app.<REALM>.signalfx.com/...`).
+
+Regenerate the export (no credentials) with:
+
+```bash
+python3 bin/usefulness_v3.py --export
+python3 bin/detectors_v3.py --export
+```
+
+`bin/apply_dashboards.py` is still the small, idempotent **Bot Health** starter covered by `tests/test_dashboards.py`. The exported Bot Ops board is the fuller operations view. Pipeline freshness and the two new detectors are documented in [Pipeline freshness](pipeline-freshness.md).

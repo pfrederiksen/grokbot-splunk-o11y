@@ -5,7 +5,10 @@ The default ingest path is still the SignalFx /v2/datapoint JSON API
 (stdlib, no extra packages). This module is used only when the emitter is
 run with --protocol otlp (or GROKBOT_O11Y_PROTOCOL=otlp).
 
-Live export needs the optional OpenTelemetry SDK:
+Live export needs the optional OpenTelemetry SDK. Metrics keep an empty
+resource so MTS identities stay on the original dimensions (typically
+``host``). Traces use service.name=grokbot-emitter so they show up in APM.
+
 
     pip install -r requirements-otel.txt
 
@@ -18,8 +21,12 @@ import os
 from typing import Any
 
 OTLP_METRICS_PATH = "/v2/datapoint/otlp"
+OTLP_TRACES_PATH = "/v2/trace/otlp"
 HEADER_TOKEN = "X-SF-TOKEN"
 SERVICE_NAME = "grokbot-emitter"
+
+_tracer = None
+_tracer_provider = None
 
 
 def otlp_metrics_url(realm: str | None = None) -> str:
@@ -32,6 +39,18 @@ def otlp_metrics_url(realm: str | None = None) -> str:
     if not realm or (realm.startswith("<") and realm.endswith(">")):
         raise ValueError("missing_realm")
     return f"https://ingest.{realm}.signalfx.com{OTLP_METRICS_PATH}"
+
+
+def otlp_traces_url(realm: str | None = None) -> str:
+    """Splunk Observability Cloud OTLP/HTTP traces endpoint for a realm."""
+    override = os.environ.get("SPLUNK_O11Y_OTLP_TRACES_URL")
+    if override:
+        return override.rstrip("/")
+    realm = realm if realm is not None else os.environ.get("SPLUNK_O11Y_REALM", "")
+    realm = (realm or "").strip()
+    if not realm or (realm.startswith("<") and realm.endswith(">")):
+        raise ValueError("missing_realm")
+    return f"https://ingest.{realm}.signalfx.com{OTLP_TRACES_PATH}"
 
 
 def collector_otlp_url() -> str:
@@ -106,12 +125,10 @@ def export_gauges(points: list[dict[str, Any]], token: str, realm: str | None = 
     from opentelemetry.sdk.resources import Resource
 
     series = points_to_series(points)
-    host = None
-    if series and series[0]["attributes"].get("host"):
-        host = series[0]["attributes"]["host"]
 
     # Splunk's OTLP metrics ingest expects the token in X-SF-TOKEN, not the
     # generic Authorization header the exporter uses by default.
+    # An empty resource keeps service.name / host.name off the metric MTS.
     exporter = OTLPMetricExporter(
         endpoint=url,
         headers=auth_headers(token),
@@ -119,7 +136,7 @@ def export_gauges(points: list[dict[str, Any]], token: str, realm: str | None = 
     )
     reader = PeriodicExportingMetricReader(exporter, export_interval_millis=60_000)
     provider = MeterProvider(
-        resource=Resource.create(resource_attributes(host)),
+        resource=Resource.create({}),
         metric_readers=[reader],
     )
     meter = provider.get_meter(SERVICE_NAME)
@@ -147,3 +164,80 @@ def export_gauges(points: list[dict[str, Any]], token: str, realm: str | None = 
     if not ok:
         return None, "otlp_flush_failed"
     return 200, "ok"
+
+
+def _ingest_token() -> str:
+    token = (os.environ.get("SPLUNK_O11Y_INGEST_TOKEN") or "").strip()
+    if not token or (token.startswith("<") and token.endswith(">")):
+        raise ValueError("missing_ingest_token")
+    return token
+
+
+def start_tracer():
+    """Install a tracer provider that exports one batch of traces via OTLP/HTTP.
+
+    Traces use service.name=grokbot-emitter (required for APM). That resource
+    is not applied to metrics, so it does not split custom MTS. Host and
+    deployment environment come from GROKBOT_HOST / GROKBOT_ENVIRONMENT
+    when set. Returns None if the SDK or credentials are unavailable.
+    """
+    global _tracer, _tracer_provider
+    if _tracer is not None:
+        return _tracer
+    try:
+        from opentelemetry import trace
+        from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+        from opentelemetry.sdk.resources import Resource
+        from opentelemetry.sdk.trace import TracerProvider
+        from opentelemetry.sdk.trace.export import BatchSpanProcessor
+        from opentelemetry.semconv.resource import ResourceAttributes
+    except ImportError:
+        return None
+    try:
+        token = _ingest_token()
+        url = otlp_traces_url()
+    except ValueError:
+        return None
+    attributes = {ResourceAttributes.SERVICE_NAME: SERVICE_NAME}
+    host = os.environ.get("GROKBOT_HOST")
+    if host:
+        attributes["host"] = host
+    environment = os.environ.get("GROKBOT_ENVIRONMENT")
+    if environment:
+        attributes["deployment.environment"] = environment
+    try:
+        provider = TracerProvider(resource=Resource(attributes=attributes))
+        exporter = OTLPSpanExporter(
+            endpoint=url,
+            headers=auth_headers(token),
+            timeout=30,
+        )
+        provider.add_span_processor(
+            BatchSpanProcessor(exporter, max_export_batch_size=32, schedule_delay_millis=500)
+        )
+        trace.set_tracer_provider(provider)
+        _tracer_provider = provider
+        _tracer = trace.get_tracer(SERVICE_NAME)
+        return _tracer
+    except Exception:
+        _tracer = None
+        _tracer_provider = None
+        return None
+
+
+def get_tracer():
+    return _tracer
+
+
+def flush_traces(timeout_ms: int = 15000) -> tuple[bool, str]:
+    """Force-flush traces. Returns (ok, err). Errors are type names only."""
+    provider = _tracer_provider
+    if provider is None:
+        return False, "no_tracer"
+    try:
+        ok = provider.force_flush(timeout_ms)
+        provider.shutdown()
+        return (True, "ok") if ok else (False, "trace_flush_failed")
+    except Exception:
+        typ = __import__("sys").exc_info()[0]
+        return False, typ.__name__ if typ else "trace_error"

@@ -13,9 +13,10 @@ You will end up with:
   via OpenTelemetry OTLP/HTTP (optional stdlib-only `--protocol signalfx` fallback)
 - A wrapper script that loads tokens from `chmod 600` files and never prints them
 - A Grok Bot routine that stays quiet unless **two consecutive** runs fail
-- A **Bot Health** dashboard plus detectors (emitter silent, disk high, memory
+- A **Bot Health** starter dashboard plus detectors (emitter silent, disk high, memory
   high, stale sync), applied as code
-- Exported dashboard and detector JSON under [dashboards/](dashboards/) (a richer snapshot; `bin/apply_dashboards.py` remains the small Bot Health starter)
+- Exported v3 "usefulness" dashboards under [dashboards/](dashboards/) (Overview, Bot Ops, and topic boards) plus pipeline-overdue and collector-failing detectors; `bin/apply_dashboards.py` remains the small Bot Health starter
+- Pipeline freshness gauges (`grokbot.pipeline.age_hours`, `budget_hours`, `age_ratio`, plus overdue/warn counts) described in [Pipeline freshness](docs/pipeline-freshness.md)
 
 ## Prerequisites
 
@@ -59,6 +60,25 @@ You will end up with:
    [Setup](docs/setup.md#sample-grok-bot-routine). Install the OTel SDK first (`pip install -r requirements-otel.txt`, preferably into `.venv`).
 
 
+## Pipeline freshness and action-first dashboards
+
+Each scheduled job reports how stale it is as a fraction of its *schedule
+budget*: hours since last success divided by (time since the latest run that
+should have finished, plus an allowance). `grokbot.pipeline.age_ratio` ≥ 1
+means a run was missed; 0.75 is the gold "watch" threshold.
+`grokbot.pipeline.overdue_count` and `grokbot.pipeline.warn_count` roll those
+up for the Overview needs-attention row. The **Pipeline overdue** detector
+watches calendar, finance, home, jobs, trader, and trading-status pipelines
+for 1 hour 15 minutes; **Emitter collector failing** fires when
+`grokbot.collector.ok` stays below 1 for the same window. Email, birds, and
+backup keep their own stale detectors.
+
+The Bot Ops dashboard header includes a runbook table (schedule, allowance,
+and what to rerun). Optional hobby sources live under `GROKBOT_DATA_ROOT`
+(default `data/`) and are skipped when the files are missing, so a fresh
+clone stays quiet. Details, including NYSE holiday and early-close handling
+for the trader heartbeat, are in [Pipeline freshness](docs/pipeline-freshness.md).
+
 ## OpenTelemetry architecture
 
 Production ingest is **OpenTelemetry OTLP/HTTP**. The emitter sends the same
@@ -101,9 +121,10 @@ identities stay stable.
 | --- | --- |
 | [Concepts](docs/concepts.md) | Realms, ingest vs API tokens, expiry, Free Edition limits, MTS |
 | [Setup](docs/setup.md) | Token files, the emitter, the hourly routine prompt |
-| [Dashboards and detectors](docs/dashboards-and-detectors.md) | Bot Health as code, SignalFlow, `--dry-run` |
+| [Dashboards and detectors](docs/dashboards-and-detectors.md) | Bot Health as code, SignalFlow, `--dry-run`, v3 export |
 | [Best practices](docs/best-practices.md) | Cardinality, naming, heartbeats, token hygiene, MTS budget |
 | [Ideas](docs/ideas.md) | Optional hobby metrics (golf, birds, home, email) with fake data |
+| [Pipeline freshness](docs/pipeline-freshness.md) | Schedule budgets, age ratio, overdue/warn counts, NYSE slots, new detectors |
 | [OpenTelemetry](docs/otel.md) | Optional OTLP/HTTP path and example collector config |
 
 ## Tests

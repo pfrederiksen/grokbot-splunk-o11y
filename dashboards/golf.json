@@ -1,17 +1,13 @@
 {
   "id": "<DASHBOARD_ID_GOLF>",
   "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>",
-  "description": "Handicap, last-round scoring, and 20-round averages with sparklines and comparisons.",
-  "filters": {
-    "sources": [],
-    "time": null,
-    "variables": []
-  },
+  "description": "Handicap trend and what score lowers it (best 8 of the last 20 differentials).",
+  "filters": null,
   "eventOverlays": [],
   "charts": [
     {
       "layout": {
-        "chartId": "<CHART_ID_68>",
+        "chartId": "<CHART_ID_61>",
         "column": 0,
         "height": 1,
         "row": 0,
@@ -21,16 +17,16 @@
         "name": "Golf header",
         "programText": "",
         "options": {
-          "markdown": "# ⛳ Golf\n\nHandicap index, the last 18, and the 20-round rolling game. These gauges move when a new round or GHIN pull lands.\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) · [Bot Health](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_HEALTH>) · **Golf** · [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) · [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) · [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) · [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\n[Open the Grok Bot group](https://app.<REALM>.signalfx.com/#/dashboard-group/<GROUP_ID>) · green healthy · gold watch · red act · sparklines follow the dashboard time window.",
-          "type": "Text"
+          "type": "Text",
+          "markdown": "# Golf\n\n**Diff to beat** = the 8th-best differential in the last 20 rounds: post a lower one and it counts. **Gross to beat** converts that at the last course's rating/slope. **Oldest round counts = 1** means the next posted round pushes out a counting score, so the index can rise.\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) \u00b7 [Bot Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>) \u00b7 [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) \u00b7 **Golf** \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
         },
         "description": null,
-        "id": "<CHART_ID_68>"
+        "id": "<CHART_ID_61>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_19>",
+        "chartId": "<CHART_ID_62>",
         "column": 0,
         "height": 1,
         "row": 1,
@@ -40,160 +36,131 @@
         "name": "Handicap index",
         "programText": "data('grokbot.golf.handicap_index').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Handicap index",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Handicap index"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_19>"
+        "id": "<CHART_ID_62>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_20>",
+        "chartId": "<CHART_ID_63>",
         "column": 3,
         "height": 1,
         "row": 1,
         "width": 3
       },
       "chart": {
-        "name": "Low HI",
-        "programText": "data('grokbot.golf.low_hi').publish('v')",
+        "name": "Index change, 30 days (negative = better)",
+        "programText": "data('grokbot.golf.hi_change_30d').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Low HI",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Index change, 30 days (negative = better)"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 0
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 0,
+              "lt": 0.5
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 0.5
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_20>"
+        "id": "<CHART_ID_63>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_101>",
+        "chartId": "<CHART_ID_64>",
         "column": 6,
         "height": 1,
         "row": 1,
         "width": 3
       },
       "chart": {
-        "name": "Last gross",
-        "programText": "data('grokbot.golf.last.gross').publish('v')",
+        "name": "Differential to beat (8th best of 20)",
+        "programText": "data('grokbot.golf.diff_to_beat').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 1,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Last gross",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Differential to beat (8th best of 20)"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_101>"
+        "id": "<CHART_ID_64>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_21>",
+        "chartId": "<CHART_ID_65>",
         "column": 9,
         "height": 1,
         "row": 1,
         "width": 3
       },
       "chart": {
-        "name": "Last net",
-        "programText": "data('grokbot.golf.last.net').publish('v')",
+        "name": "Gross to beat at last course",
+        "programText": "data('grokbot.golf.gross_to_beat').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Last net",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Gross to beat at last course"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_21>"
+        "id": "<CHART_ID_65>"
       }
     },
     {
@@ -205,34 +172,33 @@
         "width": 3
       },
       "chart": {
-        "name": "Last differential",
-        "programText": "data('grokbot.golf.last.differential').publish('v')",
+        "name": "Oldest of last 20 counts (1 = index may rise)",
+        "programText": "data('grokbot.golf.oldest_counting').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Last differential",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Oldest of last 20 counts (1 = index may rise)"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 1
+            }
+          ]
         },
         "description": null,
         "id": "<CHART_ID_66>"
@@ -240,105 +206,177 @@
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_54>",
+        "chartId": "<CHART_ID_67>",
         "column": 3,
         "height": 1,
         "row": 2,
         "width": 3
       },
       "chart": {
-        "name": "Last putts",
-        "programText": "data('grokbot.golf.last.putts').publish('v')",
+        "name": "Index change, 90 days",
+        "programText": "data('grokbot.golf.hi_change_90d').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 1,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Last putts",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Index change, 90 days"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 0
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 0,
+              "lt": 0.5
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 0.5
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_54>"
+        "id": "<CHART_ID_67>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_71>",
+        "chartId": "<CHART_ID_68>",
         "column": 6,
         "height": 1,
         "row": 2,
         "width": 3
       },
       "chart": {
-        "name": "Last FIR",
-        "programText": "data('grokbot.golf.last.fir_pct').publish('v')",
+        "name": "Last differential minus index",
+        "programText": "data('grokbot.golf.last.diff_minus_hi').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 85.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 16
-            },
-            {
-              "gt": null,
-              "gte": 70.0,
-              "lt": 85.0,
-              "lte": null,
-              "paletteIndex": 17
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 70.0,
-              "lte": null,
-              "paletteIndex": 14
-            }
-          ],
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Last FIR",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Last differential minus index"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Linear",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 0
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 0,
+              "lt": 0.5
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 0.5
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_68>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_69>",
+        "column": 9,
+        "height": 1,
+        "row": 2,
+        "width": 3
+      },
+      "chart": {
+        "name": "Rounds posted, last 30 days",
+        "programText": "data('grokbot.golf.rounds_30d').publish('v')",
+        "options": {
           "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Rounds posted, last 30 days"
+            }
+          ],
+          "colorBy": "Dimension"
+        },
+        "description": null,
+        "id": "<CHART_ID_69>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_70>",
+        "column": 0,
+        "height": 2,
+        "row": 3,
+        "width": 6
+      },
+      "chart": {
+        "name": "Handicap index, low index, and differential to beat",
+        "programText": "data('grokbot.golf.handicap_index').publish('Index')\ndata('grokbot.golf.low_hi').publish('Low index')\ndata('grokbot.golf.diff_to_beat').publish('Diff to beat')",
+        "options": {
+          "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": false,
+          "axisPrecision": 1,
+          "showEventLines": true,
           "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_70>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_71>",
+        "column": 6,
+        "height": 2,
+        "row": 3,
+        "width": 3
+      },
+      "chart": {
+        "name": "Low index (12-month)",
+        "programText": "data('grokbot.golf.low_hi').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 1,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Low index (12-month)"
+            }
+          ],
+          "colorBy": "Dimension"
         },
         "description": null,
         "id": "<CHART_ID_71>"
@@ -346,189 +384,30 @@
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_52>",
+        "chartId": "<CHART_ID_72>",
         "column": 9,
-        "height": 1,
-        "row": 2,
-        "width": 3
-      },
-      "chart": {
-        "name": "Last GIR",
-        "programText": "data('grokbot.golf.last.gir_pct').publish('v')",
-        "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 85.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 16
-            },
-            {
-              "gt": null,
-              "gte": 70.0,
-              "lt": 85.0,
-              "lte": null,
-              "paletteIndex": 17
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 70.0,
-              "lte": null,
-              "paletteIndex": 14
-            }
-          ],
-          "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Last GIR",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Linear",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_52>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_35>",
-        "column": 0,
-        "height": 1,
+        "height": 2,
         "row": 3,
         "width": 3
       },
       "chart": {
-        "name": "Rounds total",
-        "programText": "data('grokbot.golf.rounds_total').publish('v')",
-        "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Rounds total",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_35>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_63>",
-        "column": 3,
-        "height": 1,
-        "row": 3,
-        "width": 3
-      },
-      "chart": {
-        "name": "Avg20 putts",
+        "name": "20-round avg putts",
         "programText": "data('grokbot.golf.avg20.putts').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Avg20 putts",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "20-round avg putts"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_63>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_72>",
-        "column": 6,
-        "height": 1,
-        "row": 3,
-        "width": 3
-      },
-      "chart": {
-        "name": "Avg20 FIR",
-        "programText": "data('grokbot.golf.avg20.fir_pct').publish('v')",
-        "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Avg20 FIR",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
         "id": "<CHART_ID_72>"
@@ -536,310 +415,129 @@
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_84>",
-        "column": 9,
+        "chartId": "<CHART_ID_73>",
+        "column": 0,
         "height": 1,
-        "row": 3,
+        "row": 5,
         "width": 3
       },
       "chart": {
-        "name": "Avg20 GIR",
+        "name": "20-round avg GIR %",
         "programText": "data('grokbot.golf.avg20.gir_pct').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
-          "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Avg20 GIR",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
           "type": "SingleValue",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_84>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_12>",
-        "column": 0,
-        "height": 2,
-        "row": 4,
-        "width": 6
-      },
-      "chart": {
-        "name": "Handicap vs rolling 6h mean",
-        "programText": "hi = data('grokbot.golf.handicap_index')\nhi.publish('HI')\ndata('grokbot.golf.low_hi').publish('Low HI')\nhi.mean(over='6h').publish('HI 6h mean')",
-        "options": {
-          "areaChartOptions": null,
-          "axes": null,
-          "axisPrecision": 2,
-          "colorBy": "Dimension",
-          "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": false,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "HI",
-              "label": "HI",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Low HI",
-              "label": "Low HI",
-              "paletteIndex": 15,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "HI 6h mean",
-              "label": "HI 6h mean",
-              "paletteIndex": 0,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "20-round avg GIR %",
+              "valueSuffix": "%"
             }
           ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
-          "type": "TimeSeriesChart",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_12>"
+        "id": "<CHART_ID_73>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_13>",
+        "chartId": "<CHART_ID_74>",
+        "column": 3,
+        "height": 1,
+        "row": 5,
+        "width": 3
+      },
+      "chart": {
+        "name": "20-round avg fairways %",
+        "programText": "data('grokbot.golf.avg20.fir_pct').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "20-round avg fairways %",
+              "valueSuffix": "%"
+            }
+          ],
+          "colorBy": "Dimension"
+        },
+        "description": null,
+        "id": "<CHART_ID_74>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_75>",
         "column": 6,
-        "height": 2,
-        "row": 4,
-        "width": 6
+        "height": 1,
+        "row": 5,
+        "width": 3
       },
       "chart": {
-        "name": "Last round: gross, net, differential",
-        "programText": "data('grokbot.golf.last.gross').publish('Gross')\ndata('grokbot.golf.last.net').publish('Net')\ndata('grokbot.golf.last.differential').publish('Diff')",
+        "name": "Last round GIR %",
+        "programText": "data('grokbot.golf.last.gir_pct').publish('v')",
         "options": {
-          "areaChartOptions": null,
-          "axes": [
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "Strokes",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            },
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "Diff",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            }
-          ],
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Gross",
-              "label": "Gross",
-              "paletteIndex": 1,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Net",
-              "label": "Net",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Differential",
-              "label": "Diff",
-              "paletteIndex": 5,
-              "plotType": "ColumnChart",
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 1
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Last round GIR %",
+              "valueSuffix": "%"
             }
           ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
-          "type": "TimeSeriesChart",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_13>"
+        "id": "<CHART_ID_75>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_64>",
-        "column": 0,
-        "height": 2,
-        "row": 6,
-        "width": 8
+        "chartId": "<CHART_ID_76>",
+        "column": 9,
+        "height": 1,
+        "row": 5,
+        "width": 3
       },
       "chart": {
-        "name": "FIR / GIR — last round vs 20-round average",
-        "programText": "data('grokbot.golf.last.fir_pct').publish('Last FIR')\ndata('grokbot.golf.avg20.fir_pct').publish('Avg20 FIR')\ndata('grokbot.golf.last.gir_pct').publish('Last GIR')\ndata('grokbot.golf.avg20.gir_pct').publish('Avg20 GIR')",
+        "name": "Last round putts",
+        "programText": "data('grokbot.golf.last.putts').publish('v')",
         "options": {
-          "areaChartOptions": null,
-          "axes": null,
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "ColumnChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Last FIR",
-              "label": "Last FIR",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Avg20 FIR",
-              "label": "Avg20 FIR",
-              "paletteIndex": 15,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Last GIR",
-              "label": "Last GIR",
-              "paletteIndex": 1,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Avg20 GIR",
-              "label": "Avg20 GIR",
-              "paletteIndex": 2,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Last round putts"
             }
           ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
-          "type": "TimeSeriesChart",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_64>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_51>",
-        "column": 8,
-        "height": 2,
-        "row": 6,
-        "width": 4
-      },
-      "chart": {
-        "name": "Putts: last vs avg20",
-        "programText": "data('grokbot.golf.last.putts').publish('Last')\ndata('grokbot.golf.avg20.putts').publish('Avg20')",
-        "options": {
-          "areaChartOptions": null,
-          "axes": null,
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "ColumnChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": null,
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
-          "type": "TimeSeriesChart",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_51>"
+        "id": "<CHART_ID_76>"
       }
     }
   ]

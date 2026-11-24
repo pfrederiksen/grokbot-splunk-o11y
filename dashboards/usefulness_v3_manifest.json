@@ -1,0 +1,822 @@
+{
+  "dashboards": {
+    "Overview": {
+      "id": "<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>",
+      "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>",
+      "name": "Overview / Mission Control",
+      "charts": [
+        {
+          "id": "<CHART_ID_1>",
+          "name": "Overview header",
+          "type": "Text",
+          "programText": ""
+        },
+        {
+          "id": "<CHART_ID_2>",
+          "name": "Overdue pipelines \u2192 open Bot Ops",
+          "type": "SingleValue",
+          "programText": "data('grokbot.pipeline.overdue_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_3>",
+          "name": "Near budget (\u226575%) \u2192 watch",
+          "type": "SingleValue",
+          "programText": "data('grokbot.pipeline.warn_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_4>",
+          "name": "Collector errors \u2192 dry-run emit.py",
+          "type": "SingleValue",
+          "programText": "data('grokbot.collector.failed_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_5>",
+          "name": "Minutes since previous emit (>130 = missed run)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.emitter.gap_minutes').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_6>",
+          "name": "Home Assistant up (0 \u2192 home refresh)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.ha.up').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_7>",
+          "name": "Box disk % (>85 \u2192 clear caches)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.box.disk.pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_8>",
+          "name": "Email sync \u2014 budget used",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'email')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_9>",
+          "name": "Birds sync \u2014 budget used",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'birds')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_10>",
+          "name": "Backup \u2014 budget used",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'backup')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_11>",
+          "name": "Finance refresh \u2014 budget used",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'finance')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_12>",
+          "name": "Trading status sync \u2014 budget used",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'ls_trading')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_13>",
+          "name": "Home / HA status \u2014 budget used",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'home')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_14>",
+          "name": "Jobs status \u2014 budget used (3h scan lag allowed)",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'jobs')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_15>",
+          "name": "Emitter \u2014 runs in last 3h (expect 3)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.emitter.ok').sum(over='3h').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_16>",
+          "name": "Trading: account value",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.account_value').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_17>",
+          "name": "Trading: daily-loss headroom",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.day_loss_headroom_usd').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_18>",
+          "name": "Golf: handicap index",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.handicap_index').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_19>",
+          "name": "Birds: today vs typical by now",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.birds.detections.today') - data('grokbot.birds.typical_by_now_14d')).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_20>",
+          "name": "Home: storage healthy (1 = yes)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.nas.ok').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_21>",
+          "name": "All pipelines: % of schedule budget used (sorted)",
+          "type": "List",
+          "programText": "(data('grokbot.pipeline.age_ratio') * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_22>",
+          "name": "Detector incidents",
+          "type": "Event",
+          "programText": "events(eventType='*').publish('all')"
+        }
+      ]
+    },
+    "Bot Ops": {
+      "id": "<DASHBOARD_ID_BOT_OPS>",
+      "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>",
+      "name": "Bot Ops",
+      "charts": [
+        {
+          "id": "<CHART_ID_23>",
+          "name": "Bot Ops header",
+          "type": "Text",
+          "programText": ""
+        },
+        {
+          "id": "<CHART_ID_24>",
+          "name": "Overdue pipelines",
+          "type": "SingleValue",
+          "programText": "data('grokbot.pipeline.overdue_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_25>",
+          "name": "Near budget (\u226575%)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.pipeline.warn_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_26>",
+          "name": "Collector errors this run",
+          "type": "SingleValue",
+          "programText": "data('grokbot.collector.failed_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_27>",
+          "name": "Minutes since previous emit",
+          "type": "SingleValue",
+          "programText": "data('grokbot.emitter.gap_minutes').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_28>",
+          "name": "Emit duration (ms)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.emitter.duration_ms').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_29>",
+          "name": "Datapoints per batch",
+          "type": "SingleValue",
+          "programText": "data('grokbot.emitter.datapoints').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_30>",
+          "name": "Pipeline freshness: hours since success, budget hours, % used",
+          "type": "TableChart",
+          "programText": "A = data('grokbot.pipeline.age_hours').publish('Age h')\nB = data('grokbot.pipeline.budget_hours').publish('Budget h')\nC = (data('grokbot.pipeline.age_ratio') * 100).publish('% used')"
+        },
+        {
+          "id": "<CHART_ID_31>",
+          "name": "Budget used by pipeline (red \u2265100%)",
+          "type": "Heatmap",
+          "programText": "(data('grokbot.pipeline.age_ratio') * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_32>",
+          "name": "Age ratio by pipeline over time (line at 100% = overdue)",
+          "type": "TimeSeriesChart",
+          "programText": "(data('grokbot.pipeline.age_ratio') * 100).publish('ratio')\nconst(100).publish('overdue line')"
+        },
+        {
+          "id": "<CHART_ID_33>",
+          "name": "Slowest collectors this run (ms)",
+          "type": "List",
+          "programText": "data('grokbot.collector.duration_ms').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_34>",
+          "name": "Collector status (red = error)",
+          "type": "Heatmap",
+          "programText": "data('grokbot.collector.ok').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_35>",
+          "name": "Emit duration vs 6h p95 (ms)",
+          "type": "TimeSeriesChart",
+          "programText": "d = data('grokbot.emitter.duration_ms')\nd.publish('run')\nd.percentile(95, over='6h').publish('6h p95')"
+        },
+        {
+          "id": "<CHART_ID_36>",
+          "name": "Box CPU %",
+          "type": "SingleValue",
+          "programText": "data('grokbot.box.cpu.pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_37>",
+          "name": "Box memory % (>90 \u2192 find runaway process)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.box.mem.pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_38>",
+          "name": "Box disk %",
+          "type": "SingleValue",
+          "programText": "data('grokbot.box.disk.pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_39>",
+          "name": "Load 1m",
+          "type": "SingleValue",
+          "programText": "data('grokbot.box.load.1').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_40>",
+          "name": "Box CPU / memory / disk %",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.box.cpu.pct').publish('CPU')\ndata('grokbot.box.mem.pct').publish('Memory')\ndata('grokbot.box.disk.pct').publish('Disk')"
+        },
+        {
+          "id": "<CHART_ID_41>",
+          "name": "Bot detector events",
+          "type": "Event",
+          "programText": "events(eventType='*').publish('all')"
+        },
+        {
+          "id": "<CHART_ID_42>",
+          "name": "APM traces",
+          "type": "Text",
+          "programText": ""
+        }
+      ]
+    },
+    "Trading": {
+      "id": "<DASHBOARD_ID_TRADING>",
+      "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>",
+      "name": "Trading",
+      "charts": [
+        {
+          "id": "<CHART_ID_43>",
+          "name": "Trading header",
+          "type": "Text",
+          "programText": ""
+        },
+        {
+          "id": "<CHART_ID_44>",
+          "name": "Account value",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.account_value').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_45>",
+          "name": "Day P&L ($)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.day_pnl_usd').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_46>",
+          "name": "Daily-loss headroom",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.day_loss_headroom_usd').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_47>",
+          "name": "Weekly-loss headroom",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.week_loss_headroom_usd').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_48>",
+          "name": "New entries allowed (1 = yes)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.entries_allowed').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_49>",
+          "name": "Full-loss streak",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.full_loss_streak').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_50>",
+          "name": "Week P&L ($)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.week_pnl_usd').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_51>",
+          "name": "Drawdown from high-water mark",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.drawdown_from_hwm_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_52>",
+          "name": "Open risk ($)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.open_risk_usd').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_53>",
+          "name": "Open positions",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.positions.count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_54>",
+          "name": "Account value",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.trade.account_value').publish('Account')"
+        },
+        {
+          "id": "<CHART_ID_55>",
+          "name": "Loss headroom: daily vs weekly ($)",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.trade.day_loss_headroom_usd').publish('Daily')\ndata('grokbot.trade.week_loss_headroom_usd').publish('Weekly')"
+        },
+        {
+          "id": "<CHART_ID_56>",
+          "name": "Scorecard win rate",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.trade.scorecard.win_rate') * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_57>",
+          "name": "Scorecard average R",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.scorecard.avg_r').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_58>",
+          "name": "This week: expectancy (R)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.week_expectancy_r').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_59>",
+          "name": "Cash",
+          "type": "SingleValue",
+          "programText": "data('grokbot.trade.cash').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_60>",
+          "name": "Exposure: cash vs options / equity / crypto ($)",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.trade.cash').publish('Cash')\ndata('grokbot.trade.options_value').publish('Options')\ndata('grokbot.trade.equity_value').publish('Equity')\ndata('grokbot.trade.crypto_value').publish('Crypto')"
+        }
+      ]
+    },
+    "Golf": {
+      "id": "<DASHBOARD_ID_GOLF>",
+      "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>",
+      "name": "Golf",
+      "charts": [
+        {
+          "id": "<CHART_ID_61>",
+          "name": "Golf header",
+          "type": "Text",
+          "programText": ""
+        },
+        {
+          "id": "<CHART_ID_62>",
+          "name": "Handicap index",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.handicap_index').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_63>",
+          "name": "Index change, 30 days (negative = better)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.hi_change_30d').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_64>",
+          "name": "Differential to beat (8th best of 20)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.diff_to_beat').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_65>",
+          "name": "Gross to beat at last course",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.gross_to_beat').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_66>",
+          "name": "Oldest of last 20 counts (1 = index may rise)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.oldest_counting').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_67>",
+          "name": "Index change, 90 days",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.hi_change_90d').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_68>",
+          "name": "Last differential minus index",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.last.diff_minus_hi').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_69>",
+          "name": "Rounds posted, last 30 days",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.rounds_30d').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_70>",
+          "name": "Handicap index, low index, and differential to beat",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.golf.handicap_index').publish('Index')\ndata('grokbot.golf.low_hi').publish('Low index')\ndata('grokbot.golf.diff_to_beat').publish('Diff to beat')"
+        },
+        {
+          "id": "<CHART_ID_71>",
+          "name": "Low index (12-month)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.low_hi').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_72>",
+          "name": "20-round avg putts",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.avg20.putts').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_73>",
+          "name": "20-round avg GIR %",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.avg20.gir_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_74>",
+          "name": "20-round avg fairways %",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.avg20.fir_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_75>",
+          "name": "Last round GIR %",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.last.gir_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_76>",
+          "name": "Last round putts",
+          "type": "SingleValue",
+          "programText": "data('grokbot.golf.last.putts').publish('v')"
+        }
+      ]
+    },
+    "Birds": {
+      "id": "<DASHBOARD_ID_BIRDS>",
+      "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>",
+      "name": "Birds",
+      "charts": [
+        {
+          "id": "<CHART_ID_77>",
+          "name": "Birds header",
+          "type": "Text",
+          "programText": ""
+        },
+        {
+          "id": "<CHART_ID_78>",
+          "name": "Detections today",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.detections.today').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_79>",
+          "name": "Typical by now (14-day avg)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.typical_by_now_14d').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_80>",
+          "name": "Species today",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.species.today').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_81>",
+          "name": "Rare species today",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.rare_species_today').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_82>",
+          "name": "New species, last 7 days",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.new_species_7d').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_83>",
+          "name": "At-risk species today",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.at_risk_species_today').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_84>",
+          "name": "Today vs typical by this hour",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.birds.detections.today').publish('Today')\ndata('grokbot.birds.typical_by_now_14d').publish('Typical by now')"
+        },
+        {
+          "id": "<CHART_ID_85>",
+          "name": "Sync \u2014 budget used",
+          "type": "SingleValue",
+          "programText": "(data('grokbot.pipeline.age_ratio', filter=filter('pipeline', 'birds')) * 100).publish('v')"
+        },
+        {
+          "id": "<CHART_ID_86>",
+          "name": "Hours since last detection",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.last_detection_age_hours').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_87>",
+          "name": "Yesterday's detections",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.detections.yesterday').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_88>",
+          "name": "Detections, last 7 days",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.detections.7d').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_89>",
+          "name": "Species this year",
+          "type": "SingleValue",
+          "programText": "data('grokbot.birds.species.ytd').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_90>",
+          "name": "Birds detector events",
+          "type": "Event",
+          "programText": "events(eventType='Birds sync stale').publish('stale')"
+        }
+      ]
+    },
+    "Home": {
+      "id": "<DASHBOARD_ID_HOME>",
+      "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>",
+      "name": "Home",
+      "charts": [
+        {
+          "id": "<CHART_ID_91>",
+          "name": "Home header",
+          "type": "Text",
+          "programText": ""
+        },
+        {
+          "id": "<CHART_ID_92>",
+          "name": "Home Assistant up",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.ha.up').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_93>",
+          "name": "Storage healthy",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.nas.ok').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_94>",
+          "name": "Volume used",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.nas.volume_used_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_95>",
+          "name": "Cameras offline",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.camera.offline_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_96>",
+          "name": "Open alerts",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.alerts.count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_97>",
+          "name": "Low batteries",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.battery_low_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_98>",
+          "name": "Network watchdog ok",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.unifi.watchdog_ok').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_99>",
+          "name": "Firmware update (1 = available)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.unifi.fw_update_available').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_100>",
+          "name": "Router memory",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.unifi.mem_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_101>",
+          "name": "Network clients",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.unifi.clients').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_102>",
+          "name": "Storage temp \u00b0F",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.nas.temp_f').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_103>",
+          "name": "Printer toner",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.printer.toner_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_104>",
+          "name": "EV battery",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.rivian.battery_pct').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_105>",
+          "name": "EV energy left (kWh)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.rivian.remaining_kwh').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_106>",
+          "name": "EV range (mi)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.rivian.range_mi').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_107>",
+          "name": "Charging now",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.rivian.charging').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_108>",
+          "name": "Health: HA up, storage ok, network watchdog (1 = ok)",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.home.ha.up').publish('HA')\ndata('grokbot.home.nas.ok').publish('Storage')\ndata('grokbot.home.unifi.watchdog_ok').publish('Watchdog')"
+        },
+        {
+          "id": "<CHART_ID_109>",
+          "name": "Storage and router temperatures (\u00b0F)",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.home.nas.temp_f').publish('Storage')\ndata('grokbot.home.nas.disk_temp_f').publish('Disks')\ndata('grokbot.home.unifi.temp_f').publish('Router')"
+        },
+        {
+          "id": "<CHART_ID_110>",
+          "name": "EV battery % and energy left (kWh)",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.home.rivian.battery_pct').publish('Battery %')\ndata('grokbot.home.rivian.remaining_kwh').publish('kWh left')"
+        },
+        {
+          "id": "<CHART_ID_111>",
+          "name": "Thermostat temperatures (\u00b0F)",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.home.ecobee.temp_f').publish('Temp')"
+        }
+      ]
+    },
+    "Ops": {
+      "id": "<DASHBOARD_ID_OPS>",
+      "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>",
+      "name": "Ops",
+      "charts": [
+        {
+          "id": "<CHART_ID_112>",
+          "name": "Ops header",
+          "type": "Text",
+          "programText": ""
+        },
+        {
+          "id": "<CHART_ID_113>",
+          "name": "Mail needing attention (14d)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.email.attention_count').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_114>",
+          "name": "Inbox unseen",
+          "type": "SingleValue",
+          "programText": "data('grokbot.email.inbox_unseen').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_115>",
+          "name": "Orders awaiting shipment",
+          "type": "SingleValue",
+          "programText": "data('grokbot.ebay.awaiting_shipment').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_116>",
+          "name": "New job matches (last run)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.jobs.new_matches').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_117>",
+          "name": "Calendar events today",
+          "type": "SingleValue",
+          "programText": "data('grokbot.cal.events_today').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_118>",
+          "name": "Calendar sync errors",
+          "type": "SingleValue",
+          "programText": "data('grokbot.cal.errors').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_119>",
+          "name": "Listings with bids",
+          "type": "SingleValue",
+          "programText": "data('grokbot.ebay.with_bids').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_120>",
+          "name": "Active listings",
+          "type": "SingleValue",
+          "programText": "data('grokbot.ebay.active_listings').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_121>",
+          "name": "Listed value",
+          "type": "SingleValue",
+          "programText": "data('grokbot.ebay.current_value').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_122>",
+          "name": "Jobs: interested",
+          "type": "SingleValue",
+          "programText": "data('grokbot.jobs.tracker.interested').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_123>",
+          "name": "Jobs: applied",
+          "type": "SingleValue",
+          "programText": "data('grokbot.jobs.tracker.applied').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_124>",
+          "name": "Backup age (h)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.backup.age_hours').publish('v')"
+        },
+        {
+          "id": "<CHART_ID_125>",
+          "name": "Mail pile: attention, inbox unseen, unread",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.email.attention_count').publish('Attention')\ndata('grokbot.email.inbox_unseen').publish('Inbox unseen')\ndata('grokbot.email.unread_total').publish('Unread')"
+        },
+        {
+          "id": "<CHART_ID_126>",
+          "name": "Backup: duration (s) and data sent (bytes)",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.backup.duration_seconds').publish('Duration s')\ndata('grokbot.backup.bytes_sent').publish('Sent bytes')"
+        },
+        {
+          "id": "<CHART_ID_127>",
+          "name": "Job pipeline: interested, applied, still fits",
+          "type": "TimeSeriesChart",
+          "programText": "data('grokbot.jobs.tracker.interested').publish('Interested')\ndata('grokbot.jobs.tracker.applied').publish('Applied')\ndata('grokbot.jobs.tracker.still_fits').publish('Still fits')"
+        },
+        {
+          "id": "<CHART_ID_128>",
+          "name": "Ops detector events",
+          "type": "Event",
+          "programText": "events(eventType='*').publish('all')"
+        }
+      ]
+    }
+  },
+  "notes": "Placeholder IDs only. Re-apply by name in your own org."
+}

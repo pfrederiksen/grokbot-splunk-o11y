@@ -1,0 +1,750 @@
+{
+  "id": "<DASHBOARD_ID_BOT_OPS>",
+  "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>",
+  "description": "Routine and pipeline health vs schedule, emit.py collectors (duration, errors), traces, box resources, and the runbook.",
+  "filters": null,
+  "eventOverlays": [
+    {
+      "eventLine": true,
+      "eventColorIndex": 16,
+      "eventSignal": {
+        "eventSearchText": "Pipeline overdue",
+        "eventType": "detectorEvents",
+        "detectorId": "<DETECTOR_ID_PIPELINE_OVERDUE>"
+      },
+      "label": null,
+      "sources": [],
+      "overlayId": "<OVERLAY_ID_5>"
+    },
+    {
+      "eventLine": true,
+      "eventColorIndex": 5,
+      "eventSignal": {
+        "eventSearchText": "Emitter collector failing",
+        "eventType": "detectorEvents",
+        "detectorId": "<DETECTOR_ID_EMITTER_COLLECTOR_FAILING>"
+      },
+      "label": null,
+      "sources": [],
+      "overlayId": "<OVERLAY_ID_6>"
+    },
+    {
+      "eventLine": true,
+      "eventColorIndex": 16,
+      "eventSignal": {
+        "eventSearchText": "Emitter silent",
+        "eventType": "detectorEvents",
+        "detectorId": "<DETECTOR_ID_EMITTER_SILENT>"
+      },
+      "label": null,
+      "sources": [],
+      "overlayId": "<OVERLAY_ID_7>"
+    }
+  ],
+  "charts": [
+    {
+      "layout": {
+        "chartId": "<CHART_ID_23>",
+        "column": 0,
+        "height": 3,
+        "row": 0,
+        "width": 12
+      },
+      "chart": {
+        "name": "Bot Ops header",
+        "programText": "",
+        "options": {
+          "type": "Text",
+          "markdown": "# Bot Ops\n\n**Budget** = time since the latest scheduled run that should have finished, plus that pipeline's allowance. **Age ratio** = hours since last success \u00f7 budget; \u2265100% means a run was missed. The *Pipeline overdue* detector fires after 2 overdue hourly samples (calendar, finance, home, jobs, trader, ls_trading); email, birds and backup have their own detectors.\n\n| Pipeline | Schedule (PT) | Allowance | If red |\n|---|---|---|---|\n| email | every 2h, 6:04a-10:04p | 1.5h | rerun the email refresh routine |\n| calendar | every 2h, 6:04a-10:04p | 1.5h | rerun the calendar refresh routine |\n| birds | hourly | 1.25h | rerun the bird-detection sync |\n| backup | nightly ~2:00a | 5h | check the latest backup log and rerun the backup routine |\n| finance | daily ~6:00a | 2.5h | rerun the finance refresh routine |\n| home | 6:20a, then every 4h to 10:20p | 2h | rerun the home-status refresh (read-only) |\n| jobs | ~7:45a and ~2:45p | 3h | wait for the next job scan or rerun it |\n| trader | every 15m in market hours (NYSE days) | 1h | check the trading heartbeat file during regular hours |\n| ls_trading | hourly :15, 6a-10p | 1h | rerun the trading status sync |\n| ebay | fixed 9h budget | - | rerun the sales sync routine |\n| golf | fixed 8-day budget | - | refresh handicap data after a posted round |\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) \u00b7 **Bot Ops** \u00b7 [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) \u00b7 [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
+        },
+        "description": null,
+        "id": "<CHART_ID_23>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_24>",
+        "column": 0,
+        "height": 1,
+        "row": 3,
+        "width": 2
+      },
+      "chart": {
+        "name": "Overdue pipelines",
+        "programText": "data('grokbot.pipeline.overdue_count').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Overdue pipelines"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 1
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_24>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_25>",
+        "column": 2,
+        "height": 1,
+        "row": 3,
+        "width": 2
+      },
+      "chart": {
+        "name": "Near budget (\u226575%)",
+        "programText": "data('grokbot.pipeline.warn_count').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Near budget (\u226575%)"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 1
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_25>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_26>",
+        "column": 4,
+        "height": 1,
+        "row": 3,
+        "width": 2
+      },
+      "chart": {
+        "name": "Collector errors this run",
+        "programText": "data('grokbot.collector.failed_count').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Collector errors this run"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 1
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_26>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_27>",
+        "column": 6,
+        "height": 1,
+        "row": 3,
+        "width": 2
+      },
+      "chart": {
+        "name": "Minutes since previous emit",
+        "programText": "data('grokbot.emitter.gap_minutes').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Minutes since previous emit"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 75
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 75,
+              "lt": 130
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 130
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_27>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_28>",
+        "column": 8,
+        "height": 1,
+        "row": 3,
+        "width": 2
+      },
+      "chart": {
+        "name": "Emit duration (ms)",
+        "programText": "data('grokbot.emitter.duration_ms').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Emit duration (ms)"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 3000
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 3000,
+              "lt": 10000
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 10000
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_28>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_29>",
+        "column": 10,
+        "height": 1,
+        "row": 3,
+        "width": 2
+      },
+      "chart": {
+        "name": "Datapoints per batch",
+        "programText": "data('grokbot.emitter.datapoints').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Datapoints per batch"
+            }
+          ],
+          "colorBy": "Dimension"
+        },
+        "description": null,
+        "id": "<CHART_ID_29>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_30>",
+        "column": 0,
+        "height": 3,
+        "row": 4,
+        "width": 6
+      },
+      "chart": {
+        "name": "Pipeline freshness: hours since success, budget hours, % used",
+        "programText": "A = data('grokbot.pipeline.age_hours').publish('Age h')\nB = data('grokbot.pipeline.budget_hours').publish('Budget h')\nC = (data('grokbot.pipeline.age_ratio') * 100).publish('% used')",
+        "options": {
+          "type": "TableChart",
+          "maximumPrecision": 1,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "groupBy": [
+            "pipeline"
+          ],
+          "publishLabelOptions": [
+            {
+              "label": "Age h",
+              "displayName": "Hours since success"
+            },
+            {
+              "label": "Budget h",
+              "displayName": "Budget (h)"
+            },
+            {
+              "label": "% used",
+              "displayName": "% of budget",
+              "valueSuffix": "%"
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_30>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_31>",
+        "column": 6,
+        "height": 3,
+        "row": 4,
+        "width": 6
+      },
+      "chart": {
+        "name": "Budget used by pipeline (red \u2265100%)",
+        "programText": "(data('grokbot.pipeline.age_ratio') * 100).publish('v')",
+        "options": {
+          "type": "Heatmap",
+          "timestampHidden": true,
+          "unitPrefix": "Metric",
+          "groupBy": [
+            "pipeline"
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 75
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 75,
+              "lt": 100
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 100
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_31>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_32>",
+        "column": 0,
+        "height": 2,
+        "row": 7,
+        "width": 12
+      },
+      "chart": {
+        "name": "Age ratio by pipeline over time (line at 100% = overdue)",
+        "programText": "(data('grokbot.pipeline.age_ratio') * 100).publish('ratio')\nconst(100).publish('overdue line')",
+        "options": {
+          "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": true,
+          "axisPrecision": 0,
+          "showEventLines": true,
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_32>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_33>",
+        "column": 0,
+        "height": 2,
+        "row": 9,
+        "width": 4
+      },
+      "chart": {
+        "name": "Slowest collectors this run (ms)",
+        "programText": "data('grokbot.collector.duration_ms').publish('v')",
+        "options": {
+          "type": "List",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Slowest collectors this run (ms)"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1000
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 1000,
+              "lt": 5000
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 5000
+            }
+          ],
+          "sortBy": "-value"
+        },
+        "description": null,
+        "id": "<CHART_ID_33>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_34>",
+        "column": 4,
+        "height": 2,
+        "row": 9,
+        "width": 4
+      },
+      "chart": {
+        "name": "Collector status (red = error)",
+        "programText": "data('grokbot.collector.ok').publish('v')",
+        "options": {
+          "type": "Heatmap",
+          "timestampHidden": true,
+          "unitPrefix": "Metric",
+          "groupBy": [
+            "collector"
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 1
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_34>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_35>",
+        "column": 8,
+        "height": 2,
+        "row": 9,
+        "width": 4
+      },
+      "chart": {
+        "name": "Emit duration vs 6h p95 (ms)",
+        "programText": "d = data('grokbot.emitter.duration_ms')\nd.publish('run')\nd.percentile(95, over='6h').publish('6h p95')",
+        "options": {
+          "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": true,
+          "axisPrecision": 0,
+          "showEventLines": true,
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_35>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_36>",
+        "column": 0,
+        "height": 1,
+        "row": 11,
+        "width": 3
+      },
+      "chart": {
+        "name": "Box CPU %",
+        "programText": "data('grokbot.box.cpu.pct').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Box CPU %",
+              "valueSuffix": "%"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 70
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 70,
+              "lt": 85
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 85
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_36>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_37>",
+        "column": 3,
+        "height": 1,
+        "row": 11,
+        "width": 3
+      },
+      "chart": {
+        "name": "Box memory % (>90 \u2192 find runaway process)",
+        "programText": "data('grokbot.box.mem.pct').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Box memory % (>90 \u2192 find runaway process)",
+              "valueSuffix": "%"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 80
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 80,
+              "lt": 90
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 90
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_37>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_38>",
+        "column": 6,
+        "height": 1,
+        "row": 11,
+        "width": 3
+      },
+      "chart": {
+        "name": "Box disk %",
+        "programText": "data('grokbot.box.disk.pct').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Box disk %",
+              "valueSuffix": "%"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 70
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 70,
+              "lt": 85
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 85
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_38>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_39>",
+        "column": 9,
+        "height": 1,
+        "row": 11,
+        "width": 3
+      },
+      "chart": {
+        "name": "Load 1m",
+        "programText": "data('grokbot.box.load.1').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 2,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Load 1m"
+            }
+          ],
+          "colorBy": "Dimension"
+        },
+        "description": null,
+        "id": "<CHART_ID_39>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_40>",
+        "column": 0,
+        "height": 2,
+        "row": 12,
+        "width": 6
+      },
+      "chart": {
+        "name": "Box CPU / memory / disk %",
+        "programText": "data('grokbot.box.cpu.pct').publish('CPU')\ndata('grokbot.box.mem.pct').publish('Memory')\ndata('grokbot.box.disk.pct').publish('Disk')",
+        "options": {
+          "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": true,
+          "axisPrecision": 0,
+          "showEventLines": true,
+          "unitPrefix": "Metric"
+        },
+        "description": null,
+        "id": "<CHART_ID_40>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_41>",
+        "column": 6,
+        "height": 2,
+        "row": 12,
+        "width": 6
+      },
+      "chart": {
+        "name": "Bot detector events",
+        "programText": "events(eventType='*').publish('all')",
+        "options": {
+          "type": "Event"
+        },
+        "description": null,
+        "id": "<CHART_ID_41>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_42>",
+        "column": 0,
+        "height": 1,
+        "row": 14,
+        "width": 12
+      },
+      "chart": {
+        "name": "APM traces",
+        "programText": "",
+        "options": {
+          "type": "Text",
+          "markdown": "**Traces:** every hourly run is one trace in Splunk APM, service **grokbot-emitter**: a SERVER `emit` span plus one child span per collector with `source.ok`, `source.points` and `source.error_type`. Open [APM](https://app.<REALM>.signalfx.com/#/apm) \u2192 service grokbot-emitter \u2192 Traces, and filter on errors to see which collector failed. The collector charts above come from the same timings, emitted as `grokbot.collector.*`."
+        },
+        "description": null,
+        "id": "<CHART_ID_42>"
+      }
+    }
+  ]
+}

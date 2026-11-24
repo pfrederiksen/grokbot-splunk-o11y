@@ -1,8 +1,8 @@
 {
   "id": "<DETECTOR_ID_HA_DOWN>",
   "name": "HA down",
-  "description": "Home Assistant reported down for 1 hour 15 minutes (hourly emitter).",
-  "programText": "signal = data('grokbot.home.ha.up')\ndetect(when(signal == 0, lasting='1h15m')).publish('HA down')\n",
+  "description": "Home Assistant reachability (grokbot.home.ha.up) stayed at 0 for two hourly samples.",
+  "programText": "up = data('grokbot.home.ha.up').publish('signal')\ndetect(when(up < 1, lasting='1h15m')).publish('HA down')\n",
   "rules": [
     {
       "detectLabel": "HA down",
@@ -10,14 +10,14 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "HA down is {{status}} at {{timestamp}}.",
-      "parameterizedSubject": "HA down triggered",
-      "severity": "Critical"
+      "parameterizedSubject": "Grok Bot Home Assistant down",
+      "parameterizedBody": "Home Assistant reports down for 2 hourly samples. Fix: rerun the home-status refresh; this detector is monitoring only and never sends Home Assistant commands.",
+      "severity": "Major"
     }
   ],
   "maxDelay": 0,

@@ -1,42 +1,38 @@
 {
   "id": "<DASHBOARD_ID_HOME>",
   "url": "https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>",
-  "description": "Home Assistant, NAS, cameras, Rivian, Ecobee, UniFi and Withings — with alert overlays.",
-  "filters": {
-    "sources": [],
-    "time": null,
-    "variables": []
-  },
+  "description": "Read-only house health: Home Assistant, storage, network, cameras, batteries, and an EV pack.",
+  "filters": null,
   "eventOverlays": [
     {
-      "eventColorIndex": 16,
       "eventLine": true,
+      "eventColorIndex": 16,
       "eventSignal": {
-        "detectorId": "<DETECTOR_ID_HA_DOWN>",
         "eventSearchText": "HA down",
-        "eventType": "detectorEvents"
+        "eventType": "detectorEvents",
+        "detectorId": "<DETECTOR_ID_HA_DOWN>"
       },
       "label": null,
-      "overlayId": "<OVERLAY_ID_11>",
-      "sources": []
+      "sources": [],
+      "overlayId": "<OVERLAY_ID_9>"
     },
     {
-      "eventColorIndex": 5,
       "eventLine": true,
+      "eventColorIndex": 5,
       "eventSignal": {
-        "detectorId": "<DETECTOR_ID_UNIFI_WATCHDOG_FAILING>",
         "eventSearchText": "UniFi watchdog failing",
-        "eventType": "detectorEvents"
+        "eventType": "detectorEvents",
+        "detectorId": "<DETECTOR_ID_UNIFI_WATCHDOG_FAILING>"
       },
       "label": null,
-      "overlayId": "<OVERLAY_ID_5>",
-      "sources": []
+      "sources": [],
+      "overlayId": "<OVERLAY_ID_10>"
     }
   ],
   "charts": [
     {
       "layout": {
-        "chartId": "<CHART_ID_92>",
+        "chartId": "<CHART_ID_91>",
         "column": 0,
         "height": 1,
         "row": 0,
@@ -46,8 +42,49 @@
         "name": "Home header",
         "programText": "",
         "options": {
-          "markdown": "# 🏠 Home\n\nHome Assistant and the house around it. HA-down and UniFi-watchdog overlays sit on the trend charts.\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) · [Bot Health](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_HEALTH>) · [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) · [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) · [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) · **Home** · [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\n[Open the Grok Bot group](https://app.<REALM>.signalfx.com/#/dashboard-group/<GROUP_ID>) · green healthy · gold watch · red act · sparklines follow the dashboard time window.",
-          "type": "Text"
+          "type": "Text",
+          "markdown": "# Home\n\nMonitoring only (no Home Assistant commands). Values refresh with the home-status routine (6:20a, then every 4h in the sample schedule).\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) \u00b7 [Bot Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>) \u00b7 [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) \u00b7 [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 **Home** \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
+        },
+        "description": null,
+        "id": "<CHART_ID_91>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_92>",
+        "column": 0,
+        "height": 1,
+        "row": 1,
+        "width": 2
+      },
+      "chart": {
+        "name": "Home Assistant up",
+        "programText": "data('grokbot.home.ha.up').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Home Assistant up"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 1
+            }
+          ]
         },
         "description": null,
         "id": "<CHART_ID_92>"
@@ -55,573 +92,463 @@
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_28>",
-        "column": 0,
-        "height": 1,
-        "row": 1,
-        "width": 2
-      },
-      "chart": {
-        "name": "Home Assistant",
-        "programText": "data('grokbot.home.ha.up').publish('v')",
-        "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 1.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 1.0,
-              "lte": null,
-              "paletteIndex": 16
-            }
-          ],
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Home Assistant",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Radial",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
-        },
-        "description": null,
-        "id": "<CHART_ID_28>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_107>",
+        "chartId": "<CHART_ID_93>",
         "column": 2,
         "height": 1,
         "row": 1,
         "width": 2
       },
       "chart": {
-        "name": "Entities",
-        "programText": "data('grokbot.home.ha.entity_count').publish('v')",
+        "name": "Storage healthy",
+        "programText": "data('grokbot.home.nas.ok').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Entities",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Storage healthy"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 1
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_107>"
+        "id": "<CHART_ID_93>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_109>",
+        "chartId": "<CHART_ID_94>",
         "column": 4,
         "height": 1,
         "row": 1,
         "width": 2
       },
       "chart": {
-        "name": "NAS",
-        "programText": "data('grokbot.home.nas.ok').publish('v')",
+        "name": "Volume used",
+        "programText": "data('grokbot.home.nas.volume_used_pct').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 1.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 1.0,
-              "lte": null,
-              "paletteIndex": 16
-            }
-          ],
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 1,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "NAS",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Volume used",
+              "valueSuffix": "%"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Radial",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 75
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 75,
+              "lt": 85
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 85
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_109>"
+        "id": "<CHART_ID_94>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_74>",
+        "chartId": "<CHART_ID_95>",
         "column": 6,
         "height": 1,
         "row": 1,
         "width": 2
       },
       "chart": {
-        "name": "Alerts",
-        "programText": "data('grokbot.home.alerts.count').publish('v')",
+        "name": "Cameras offline",
+        "programText": "data('grokbot.home.camera.offline_count').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 1.0,
-              "lt": null,
-              "lte": null,
-              "paletteIndex": 16
-            },
-            {
-              "gt": null,
-              "gte": null,
-              "lt": 1.0,
-              "lte": null,
-              "paletteIndex": 14
-            }
-          ],
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Alerts",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Cameras offline"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 1
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_74>"
+        "id": "<CHART_ID_95>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_86>",
+        "chartId": "<CHART_ID_96>",
         "column": 8,
         "height": 1,
         "row": 1,
         "width": 2
       },
       "chart": {
-        "name": "Cameras online",
-        "programText": "data('grokbot.home.camera.online_count').publish('v')",
+        "name": "Open alerts",
+        "programText": "data('grokbot.home.alerts.count').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Cameras online",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Open alerts"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 1
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_86>"
+        "id": "<CHART_ID_96>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_79>",
+        "chartId": "<CHART_ID_97>",
         "column": 10,
         "height": 1,
         "row": 1,
         "width": 2
       },
       "chart": {
-        "name": "EV charger",
-        "programText": "data('grokbot.home.evcharger.connected').publish('v')",
+        "name": "Low batteries",
+        "programText": "data('grokbot.home.battery_low_count').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 1.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 1.0,
-              "lte": null,
-              "paletteIndex": 16
-            }
-          ],
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "EV charger",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Low batteries"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Radial",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 1
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_79>"
+        "id": "<CHART_ID_97>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_77>",
+        "chartId": "<CHART_ID_98>",
         "column": 0,
         "height": 1,
         "row": 2,
-        "width": 3
+        "width": 2
       },
       "chart": {
-        "name": "Rivian battery",
-        "programText": "data('grokbot.home.rivian.battery_pct').publish('v')",
+        "name": "Network watchdog ok",
+        "programText": "data('grokbot.home.unifi.watchdog_ok').publish('v')",
         "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Network watchdog ok"
+            }
+          ],
           "colorBy": "Scale",
-          "colorScale": null,
           "colorScale2": [
             {
-              "gt": null,
-              "gte": 50.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
+              "paletteIndex": 16,
+              "lt": 1
             },
             {
-              "gt": null,
-              "gte": 20.0,
-              "lt": 50.0,
-              "lte": null,
-              "paletteIndex": 17
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 20.0,
-              "lte": null,
-              "paletteIndex": 16
+              "paletteIndex": 14,
+              "gte": 1
             }
-          ],
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Rivian battery",
-              "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Linear",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_77>"
+        "id": "<CHART_ID_98>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_106>",
-        "column": 3,
+        "chartId": "<CHART_ID_99>",
+        "column": 2,
         "height": 1,
         "row": 2,
-        "width": 3
+        "width": 2
       },
       "chart": {
-        "name": "Rivian range",
-        "programText": "data('grokbot.home.rivian.range_mi').publish('v')",
+        "name": "Firmware update (1 = available)",
+        "programText": "data('grokbot.home.unifi.fw_update_available').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Rivian range",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": " mi",
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Firmware update (1 = available)"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 1
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 1
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_106>"
+        "id": "<CHART_ID_99>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_78>",
+        "chartId": "<CHART_ID_100>",
+        "column": 4,
+        "height": 1,
+        "row": 2,
+        "width": 2
+      },
+      "chart": {
+        "name": "Router memory",
+        "programText": "data('grokbot.home.unifi.mem_pct').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "Router memory",
+              "valueSuffix": "%"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 85
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 85,
+              "lt": 93
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 93
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_100>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_101>",
         "column": 6,
         "height": 1,
         "row": 2,
-        "width": 3
+        "width": 2
       },
       "chart": {
-        "name": "Charging",
-        "programText": "data('grokbot.home.rivian.charging').publish('v')",
+        "name": "Network clients",
+        "programText": "data('grokbot.home.unifi.clients').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 1.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 1.0,
-              "lte": null,
-              "paletteIndex": 16
-            }
-          ],
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Charging",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Network clients"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Radial",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_78>"
+        "id": "<CHART_ID_101>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_62>",
-        "column": 9,
+        "chartId": "<CHART_ID_102>",
+        "column": 8,
         "height": 1,
         "row": 2,
-        "width": 3
+        "width": 2
       },
       "chart": {
-        "name": "Weight",
-        "programText": "data('grokbot.home.withings.weight_lb').publish('v')",
+        "name": "Storage temp \u00b0F",
+        "programText": "data('grokbot.home.nas.temp_f').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "Weight",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": " lb",
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Storage temp \u00b0F"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 14,
+              "lt": 113
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 113,
+              "lt": 122
+            },
+            {
+              "paletteIndex": 16,
+              "gte": 122
+            }
+          ]
         },
         "description": null,
-        "id": "<CHART_ID_62>"
+        "id": "<CHART_ID_102>"
       }
     },
     {
       "layout": {
         "chartId": "<CHART_ID_103>",
-        "column": 0,
+        "column": 10,
         "height": 1,
-        "row": 3,
-        "width": 3
+        "row": 2,
+        "width": 2
       },
       "chart": {
-        "name": "UniFi watchdog",
-        "programText": "data('grokbot.home.unifi.watchdog_ok').publish('v')",
+        "name": "Printer toner",
+        "programText": "data('grokbot.home.printer.toner_pct').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 1.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 1.0,
-              "lte": null,
-              "paletteIndex": 16
-            }
-          ],
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "UniFi watchdog",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Printer toner",
+              "valueSuffix": "%"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Radial",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 15
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 15,
+              "lt": 30
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 30
+            }
+          ]
         },
         "description": null,
         "id": "<CHART_ID_103>"
@@ -629,165 +556,142 @@
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_18>",
+        "chartId": "<CHART_ID_104>",
+        "column": 0,
+        "height": 1,
+        "row": 3,
+        "width": 3
+      },
+      "chart": {
+        "name": "EV battery",
+        "programText": "data('grokbot.home.rivian.battery_pct').publish('v')",
+        "options": {
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
+          "publishLabelOptions": [
+            {
+              "label": "v",
+              "yAxis": 0,
+              "displayName": "EV battery",
+              "valueSuffix": "%"
+            }
+          ],
+          "colorBy": "Scale",
+          "colorScale2": [
+            {
+              "paletteIndex": 16,
+              "lt": 20
+            },
+            {
+              "paletteIndex": 17,
+              "gte": 20,
+              "lt": 50
+            },
+            {
+              "paletteIndex": 14,
+              "gte": 50
+            }
+          ]
+        },
+        "description": null,
+        "id": "<CHART_ID_104>"
+      }
+    },
+    {
+      "layout": {
+        "chartId": "<CHART_ID_105>",
         "column": 3,
         "height": 1,
         "row": 3,
         "width": 3
       },
       "chart": {
-        "name": "UniFi poller",
-        "programText": "data('grokbot.home.unifi.poller_running').publish('v')",
+        "name": "EV energy left (kWh)",
+        "programText": "data('grokbot.home.rivian.remaining_kwh').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 1.0,
-              "lt": null,
-              "lte": 1000000000.0,
-              "paletteIndex": 14
-            },
-            {
-              "gt": null,
-              "gte": -1000000000.0,
-              "lt": 1.0,
-              "lte": null,
-              "paletteIndex": 16
-            }
-          ],
-          "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 1,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "UniFi poller",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "EV energy left (kWh)"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Radial",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_18>"
+        "id": "<CHART_ID_105>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_29>",
+        "chartId": "<CHART_ID_106>",
         "column": 6,
         "height": 1,
         "row": 3,
         "width": 3
       },
       "chart": {
-        "name": "UniFi clients",
-        "programText": "data('grokbot.home.unifi.clients').publish('v')",
+        "name": "EV range (mi)",
+        "programText": "data('grokbot.home.rivian.range_mi').publish('v')",
         "options": {
-          "colorBy": "Dimension",
-          "colorScale": null,
-          "colorScale2": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
           "maximumPrecision": 0,
-          "noDataOptions": null,
-          "programOptions": null,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "UniFi clients",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "EV range (mi)"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_29>"
+        "id": "<CHART_ID_106>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_33>",
+        "chartId": "<CHART_ID_107>",
         "column": 9,
         "height": 1,
         "row": 3,
         "width": 3
       },
       "chart": {
-        "name": "UniFi CPU",
-        "programText": "data('grokbot.home.unifi.cpu_pct').publish('v')",
+        "name": "Charging now",
+        "programText": "data('grokbot.home.rivian.charging').publish('v')",
         "options": {
-          "colorBy": "Scale",
-          "colorScale": null,
-          "colorScale2": [
-            {
-              "gt": null,
-              "gte": 85.0,
-              "lt": null,
-              "lte": null,
-              "paletteIndex": 16
-            },
-            {
-              "gt": null,
-              "gte": 70.0,
-              "lt": 85.0,
-              "lte": null,
-              "paletteIndex": 17
-            },
-            {
-              "gt": null,
-              "gte": null,
-              "lt": 70.0,
-              "lte": null,
-              "paletteIndex": 14
-            }
-          ],
-          "maximumPrecision": 1,
-          "noDataOptions": null,
-          "programOptions": null,
+          "type": "SingleValue",
+          "secondaryVisualization": "Sparkline",
+          "maximumPrecision": 0,
+          "refreshInterval": 0,
+          "timestampHidden": false,
+          "unitPrefix": "Metric",
           "publishLabelOptions": [
             {
-              "displayName": "UniFi CPU",
               "label": "v",
-              "paletteIndex": null,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
+              "yAxis": 0,
+              "displayName": "Charging now"
             }
           ],
-          "refreshInterval": 0,
-          "secondaryVisualization": "Sparkline",
-          "showSparkLine": false,
-          "time": null,
-          "timestampHidden": false,
-          "type": "SingleValue",
-          "unitPrefix": "Metric"
+          "colorBy": "Dimension"
         },
         "description": null,
-        "id": "<CHART_ID_33>"
+        "id": "<CHART_ID_107>"
       }
     },
     {
@@ -799,38 +703,15 @@
         "width": 6
       },
       "chart": {
-        "name": "Ecobee temperatures",
-        "programText": "data('grokbot.home.ecobee.temp_f').publish('Temp')",
+        "name": "Health: HA up, storage ok, network watchdog (1 = ok)",
+        "programText": "data('grokbot.home.ha.up').publish('HA')\ndata('grokbot.home.nas.ok').publish('Storage')\ndata('grokbot.home.unifi.watchdog_ok').publish('Watchdog')",
         "options": {
-          "areaChartOptions": null,
-          "axes": null,
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": false,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "°F",
-              "label": "Temp",
-              "paletteIndex": 5,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "°F",
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
           "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": true,
+          "axisPrecision": 0,
+          "showEventLines": true,
           "unitPrefix": "Metric"
         },
         "description": null,
@@ -839,242 +720,74 @@
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_112>",
+        "chartId": "<CHART_ID_109>",
         "column": 6,
         "height": 2,
         "row": 4,
         "width": 6
       },
       "chart": {
-        "name": "Rivian battery and range (dual axis)",
-        "programText": "data('grokbot.home.rivian.battery_pct').publish('Battery')\ndata('grokbot.home.rivian.range_mi').publish('Range')",
+        "name": "Storage and router temperatures (\u00b0F)",
+        "programText": "data('grokbot.home.nas.temp_f').publish('Storage')\ndata('grokbot.home.nas.disk_temp_f').publish('Disks')\ndata('grokbot.home.unifi.temp_f').publish('Router')",
         "options": {
-          "areaChartOptions": null,
-          "axes": [
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "Battery %",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            },
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "Miles",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            }
-          ],
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Battery",
-              "label": "Battery",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Range",
-              "label": "Range",
-              "paletteIndex": 1,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": " mi",
-              "valueUnit": null,
-              "yAxis": 1
-            }
-          ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
           "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": false,
+          "axisPrecision": 0,
+          "showEventLines": true,
           "unitPrefix": "Metric"
         },
         "description": null,
-        "id": "<CHART_ID_112>"
+        "id": "<CHART_ID_109>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_69>",
+        "chartId": "<CHART_ID_110>",
         "column": 0,
         "height": 2,
         "row": 6,
         "width": 6
       },
       "chart": {
-        "name": "UniFi clients vs CPU",
-        "programText": "data('grokbot.home.unifi.clients').publish('Clients')\ndata('grokbot.home.unifi.cpu_pct').publish('CPU')",
+        "name": "EV battery % and energy left (kWh)",
+        "programText": "data('grokbot.home.rivian.battery_pct').publish('Battery %')\ndata('grokbot.home.rivian.remaining_kwh').publish('kWh left')",
         "options": {
-          "areaChartOptions": null,
-          "axes": [
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "Clients",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            },
-            {
-              "highWatermark": null,
-              "highWatermarkLabel": null,
-              "label": "CPU %",
-              "lowWatermark": null,
-              "lowWatermarkLabel": null,
-              "max": null,
-              "min": null
-            }
-          ],
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "AreaChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "Clients",
-              "label": "Clients",
-              "paletteIndex": 1,
-              "plotType": "AreaChart",
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "CPU",
-              "label": "CPU",
-              "paletteIndex": 5,
-              "plotType": "LineChart",
-              "valuePrefix": null,
-              "valueSuffix": "%",
-              "valueUnit": null,
-              "yAxis": 1
-            }
-          ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
           "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": true,
+          "axisPrecision": 0,
+          "showEventLines": true,
           "unitPrefix": "Metric"
         },
         "description": null,
-        "id": "<CHART_ID_69>"
+        "id": "<CHART_ID_110>"
       }
     },
     {
       "layout": {
-        "chartId": "<CHART_ID_122>",
+        "chartId": "<CHART_ID_111>",
         "column": 6,
         "height": 2,
         "row": 6,
         "width": 6
       },
       "chart": {
-        "name": "HA uptime and alert count",
-        "programText": "data('grokbot.home.ha.up').publish('HA')\ndata('grokbot.home.alerts.count').publish('Alerts')\ndata('grokbot.home.nas.ok').publish('NAS')",
+        "name": "Thermostat temperatures (\u00b0F)",
+        "programText": "data('grokbot.home.ecobee.temp_f').publish('Temp')",
         "options": {
-          "areaChartOptions": null,
-          "axes": null,
-          "axisPrecision": 1,
-          "colorBy": "Dimension",
-          "defaultPlotType": "LineChart",
-          "eventPublishLabelOptions": null,
-          "histogramChartOptions": null,
-          "includeZero": true,
-          "legendOptions": null,
-          "lineChartOptions": null,
-          "noDataOptions": null,
-          "onChartLegendOptions": null,
-          "programOptions": null,
-          "publishLabelOptions": [
-            {
-              "displayName": "HA up",
-              "label": "HA",
-              "paletteIndex": 14,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "Alerts",
-              "label": "Alerts",
-              "paletteIndex": 8,
-              "plotType": "ColumnChart",
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            },
-            {
-              "displayName": "NAS ok",
-              "label": "NAS",
-              "paletteIndex": 15,
-              "plotType": null,
-              "valuePrefix": null,
-              "valueSuffix": null,
-              "valueUnit": null,
-              "yAxis": 0
-            }
-          ],
-          "showEventLines": true,
-          "stacked": false,
-          "time": null,
           "type": "TimeSeriesChart",
+          "defaultPlotType": "LineChart",
+          "stacked": false,
+          "includeZero": false,
+          "axisPrecision": 1,
+          "showEventLines": true,
           "unitPrefix": "Metric"
         },
         "description": null,
-        "id": "<CHART_ID_122>"
-      }
-    },
-    {
-      "layout": {
-        "chartId": "<CHART_ID_76>",
-        "column": 0,
-        "height": 2,
-        "row": 8,
-        "width": 12
-      },
-      "chart": {
-        "name": "Home detector events",
-        "programText": "events(eventType='*').publish('all')",
-        "options": {
-          "eventPublishLabelOptions": null,
-          "noDataOptions": null,
-          "time": null,
-          "type": "Event"
-        },
-        "description": null,
-        "id": "<CHART_ID_76>"
+        "id": "<CHART_ID_111>"
       }
     }
   ]

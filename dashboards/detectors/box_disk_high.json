@@ -1,8 +1,8 @@
 {
   "id": "<DETECTOR_ID_BOX_DISK_HIGH>",
   "name": "Box disk high",
-  "description": "Root disk above 85% for 1 hour 15 minutes (one hourly sample plus slack).",
-  "programText": "signal = data('grokbot.box.disk.pct')\ndetect(when(signal > 85, lasting='1h15m')).publish('Box disk high')\n",
+  "description": "Root (or GROKBOT_DISK_PATH) disk used percent stayed above 85 for 1 hour 15 minutes.",
+  "programText": "disk = data('grokbot.box.disk.pct').publish('signal')\ndetect(when(disk > 85, lasting='1h15m')).publish('Box disk high')\n",
   "rules": [
     {
       "detectLabel": "Box disk high",
@@ -10,13 +10,13 @@
       "notifications": [
         {
           "type": "Email",
-          "bcc": [],
+          "email": "alerts@example.com",
           "cc": [],
-          "email": "alerts@example.com"
+          "bcc": []
         }
       ],
-      "parameterizedBody": "Box disk high is {{status}} at {{timestamp}}.",
-      "parameterizedSubject": "Box disk high triggered",
+      "parameterizedSubject": "Grok Bot box disk high",
+      "parameterizedBody": "Box disk is {{inputs.signal.value}}% (>85%). Fix: find large rebuildable caches and clear them; do not delete source data.",
       "severity": "Major"
     }
   ],
