@@ -109,13 +109,14 @@ def detector_definitions(email: str = EXAMPLE_EMAIL) -> list[dict[str, Any]]:
         {
             "id": PLACEHOLDERS["HA down"],
             "name": "HA down",
-            "description": "Home Assistant reachability (grokbot.home.ha.up) stayed at 0 for two hourly samples.",
+            "description": "Home Assistant reachability (grokbot.home.ha.up) stayed at 0 for 1 hour 15 minutes. A down reading is omitted when the status file is older than 30 minutes, so a stale file does not fire this detector.",
             "programText": "up = data('grokbot.home.ha.up').publish('signal')\n"
             "detect(when(up < 1, lasting='1h15m')).publish('HA down')\n",
             "rules": [rule(
                 "HA down",
                 "Grok Bot Home Assistant down",
-                "Home Assistant reports down for 2 hourly samples. Fix: rerun the home-status refresh; this detector is monitoring only and never sends Home Assistant commands.",
+                "Home Assistant reports down for 2 hourly samples. Fix: rerun the home-status refresh; this detector is monitoring only and never sends Home Assistant commands. "
+                "If grokbot.home.status.age_minutes is also high, refresh the status file first — a stale file is not treated as down.",
                 "Major",
                 email,
             )],

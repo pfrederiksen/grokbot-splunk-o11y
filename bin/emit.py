@@ -43,6 +43,9 @@ METRIC_COLLECTOR_MS = "grokbot.collector.duration_ms"
 METRIC_COLLECTOR_FAIL = "grokbot.collector.failed_count"
 METRIC_GAP = "grokbot.emitter.gap_minutes"
 METRIC_FAILING = "grokbot.routine.failing_count"
+METRIC_HA_UP = "grokbot.home.ha.up"
+METRIC_HA_AGE = "grokbot.home.status.age_minutes"
+HA_STALE_MINUTES = 30.0
 
 # NYSE full closures and 10:00 PT early closes (Trader heartbeat only).
 # Keep the sample calendar current; it is not loaded from a live feed.
@@ -597,6 +600,60 @@ def collect_cpu(timestamp_ms: int | None = None) -> list[dict[str, Any]]:
     return [point] if point else []
 
 
+
+def truthy_up(value) -> float | None:
+    """Interpret a status flag as 1, 0, or unknown."""
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return 1.0 if value else 0.0
+    if isinstance(value, (int, float)) and value == value:
+        return 1.0 if float(value) else 0.0
+    text = str(value).strip().lower()
+    if text in {"1", "true", "yes", "up", "ok", "healthy", "normal"}:
+        return 1.0
+    if text in {"0", "false", "no", "down", "error", "unhealthy"}:
+        return 0.0
+    return None
+
+
+def collect_home_status(
+    path: Path | None = None,
+    timestamp_ms: int | None = None,
+    now_epoch: float | None = None,
+    stale_minutes: float = HA_STALE_MINUTES,
+) -> list[dict[str, Any]]:
+    """Optional Home Assistant reachability from GROKBOT_DATA_ROOT/home/status.json.
+
+    Emits grokbot.home.status.age_minutes from the file mtime. A "down" reading
+    in a file older than stale_minutes is treated as unknown so the HA-down
+    detector does not fire on a stale snapshot. Missing files yield no points.
+    """
+    status_path = path or data_path("home", "status.json")
+    if not status_path.exists():
+        return []
+    try:
+        payload = json.loads(status_path.read_text(encoding="utf-8")) or {}
+    except (OSError, json.JSONDecodeError):
+        payload = {}
+    if not isinstance(payload, dict):
+        payload = {}
+    ha_up = truthy_up(payload.get("up"))
+    if ha_up is None and payload.get("error"):
+        ha_up = 0.0
+    pts: list[dict[str, Any]] = []
+    try:
+        age_min = ((now_epoch if now_epoch is not None else time.time()) - status_path.stat().st_mtime) / 60.0
+    except OSError:
+        age_min = None
+    if age_min is not None:
+        add_points(pts, gauge(METRIC_HA_AGE, round(max(0.0, age_min), 1), timestamp_ms=timestamp_ms))
+        if ha_up == 0.0 and age_min > stale_minutes:
+            ha_up = None
+    add_points(pts, gauge(METRIC_HA_UP, ha_up, timestamp_ms=timestamp_ms))
+    return pts
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Emit basic Grok Bot gauges to Splunk Observability Cloud.")
     parser.add_argument(
@@ -658,6 +715,7 @@ def run(argv: list[str] | None = None) -> int:
         safe_collect("load", lambda: collect_load(timestamp_ms=ts), out)
         safe_collect("freshness", lambda: collect_freshness(prior, now_epoch=epoch, timestamp_ms=ts), out)
         safe_collect("pipelines", lambda: collect_pipelines(timestamp_ms=ts, state=prior), out)
+        safe_collect("home_status", lambda: collect_home_status(timestamp_ms=ts), out)
     finally:
         if root_span is not None:
             try:

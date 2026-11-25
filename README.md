@@ -79,6 +79,20 @@ and what to rerun). Optional hobby sources live under `GROKBOT_DATA_ROOT`
 clone stays quiet. Details, including NYSE holiday and early-close handling
 for the trader heartbeat, are in [Pipeline freshness](docs/pipeline-freshness.md).
 
+Overview and Home also show `grokbot.home.status.age_minutes` (age of the
+optional home status file). If that file is older than 30 minutes, a "down"
+reading is omitted so the **HA down** detector does not fire on a stale
+snapshot; act on the status-age tile and rerun the home-status refresh.
+`bin/verify_dashboards.py` checks that every data chart in the Grok Bot
+group still returns values (7-day window for golf, 24 hours otherwise) and
+lists detector issues. It reads `SPLUNK_O11Y_API_TOKEN` and
+`SPLUNK_O11Y_REALM` from the environment only:
+
+```bash
+python3 bin/verify_dashboards.py
+python3 bin/verify_dashboards.py --json /tmp/verify.json
+```
+
 ## OpenTelemetry architecture
 
 Production ingest is **OpenTelemetry OTLP/HTTP**. The emitter sends the same
@@ -121,7 +135,7 @@ identities stay stable.
 | --- | --- |
 | [Concepts](docs/concepts.md) | Realms, ingest vs API tokens, expiry, Free Edition limits, MTS |
 | [Setup](docs/setup.md) | Token files, the emitter, the hourly routine prompt |
-| [Dashboards and detectors](docs/dashboards-and-detectors.md) | Bot Health as code, SignalFlow, `--dry-run`, v3 export |
+| [Dashboards and detectors](docs/dashboards-and-detectors.md) | Bot Health as code, SignalFlow, v3 export, `verify_dashboards.py` |
 | [Best practices](docs/best-practices.md) | Cardinality, naming, heartbeats, token hygiene, MTS budget |
 | [Ideas](docs/ideas.md) | Optional hobby metrics (golf, birds, home, email) with fake data |
 | [Pipeline freshness](docs/pipeline-freshness.md) | Schedule budgets, age ratio, overdue/warn counts, NYSE slots, new detectors |

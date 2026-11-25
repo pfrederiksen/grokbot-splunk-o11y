@@ -99,3 +99,33 @@ python3 bin/detectors_v3.py --export
 ```
 
 `bin/apply_dashboards.py` is still the small, idempotent **Bot Health** starter covered by `tests/test_dashboards.py`. The exported Bot Ops board is the fuller operations view. Pipeline freshness and the two new detectors are documented in [Pipeline freshness](pipeline-freshness.md).
+
+## Verifying live charts
+
+`bin/verify_dashboards.py` looks up the **Grok Bot** dashboard group by name
+(or `GROKBOT_DASHBOARD_GROUP` / `GROKBOT_DASHBOARD_GROUP_ID`), runs each
+SignalFlow program, and reports OK / EMPTY / ERROR / WARN / SKIP. Golf
+charts use a 7-day window; everything else uses 24 hours. Text charts and
+event feeds are skipped. A last-value sanity check flags obviously broken
+numbers (for example a percentage outside 0–110).
+
+```bash
+export SPLUNK_O11Y_REALM=<REALM>
+export SPLUNK_O11Y_API_TOKEN=<API_TOKEN>
+python3 bin/verify_dashboards.py
+python3 bin/verify_dashboards.py --quiet --json /tmp/verify.json
+```
+
+The script never prints tokens and does not hardcode a realm. Override the
+API base with `SPLUNK_O11Y_API_URL` if needed. `bin/verify_v3.py` remains a
+smaller name-based check of the same boards.
+
+## Home Assistant status age
+
+Overview and Home include an **HA status age** tile (`grokbot.home.status.age_minutes`).
+The sample emitter reads an optional `data/home/status.json` (or
+`GROKBOT_DATA_ROOT/home/status.json`). Green is under 4.5 hours, gold
+covers an overnight gap, and red starts at 10 hours. If the file is older
+than 30 minutes, a "down" `grokbot.home.ha.up` reading is omitted so the
+HA-down detector does not fire on a stale snapshot. Refresh the status
+file, then look at HA up again.

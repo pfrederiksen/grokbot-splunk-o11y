@@ -226,6 +226,8 @@ NAS_VOL = scale_open((None, 75, G), (75, 85, Y), (85, None, RED))
 NAS_T = scale_open((None, 113, G), (113, 122, Y), (122, None, RED))
 UNIFI_MEM = scale_open((None, 85, G), (85, 93, Y), (93, None, RED))
 BATT = scale_open((None, 20, RED), (20, 50, Y), (50, None, G))
+# Minutes since the Home Assistant status file was written; red after 10h (covers an overnight gap).
+SCALE_HA_AGE = scale_open((None, 270, G), (270, 600, Y), (600, None, RED))
 
 
 def ratio_tile(title: str, pipeline: str) -> dict:
@@ -294,9 +296,10 @@ def specs() -> dict[str, dict]:
         rows=[
             [C(text("Overview header", nav("Mission Control",
                 "Top row = needs attention (anything not green is a to-do). Second block = every pipeline's age as a % of its schedule budget: "
-                "100% means the latest run that should have finished has not landed. Bottom = headline numbers.", "Overview")), 12, 1)],
+                "100% means the latest run that should have finished has not landed. Bottom = headline numbers. "
+                "HA up can be blank when the home status file is stale; the status-age tile is the one to act on.", "Overview")), 12, 1)],
             [C(sv("Overdue pipelines → open Bot Ops", d1("grokbot.pipeline.overdue_count"), scale=ZERO_GOOD), 2, 1),
-             C(sv("Near budget (≥75%) → watch", d1("grokbot.pipeline.warn_count"), scale=ZERO_WARN), 2, 1),
+             C(sv("HA status age (min; red after 10h, then home refresh)", d1("grokbot.home.status.age_minutes"), scale=SCALE_HA_AGE), 2, 1),
              C(sv("Collector errors → dry-run emit.py", d1("grokbot.collector.failed_count"), scale=ZERO_GOOD), 2, 1),
              C(sv("Minutes since previous emit (>130 = missed run)", d1("grokbot.emitter.gap_minutes"), scale=GAP), 2, 1),
              C(sv("Home Assistant up (0 → home refresh)", d1("grokbot.home.ha.up"), scale=ONE_GOOD), 2, 1),
@@ -452,17 +455,18 @@ def specs() -> dict[str, dict]:
         overlays=[overlay("HA down", DET["HA down"], RED), overlay("UniFi watchdog failing", DET["UniFi watchdog failing"], OR)],
         rows=[
             [C(text("Home header", nav("Home",
-                "Monitoring only (no Home Assistant commands). Values refresh with the home-status routine (6:20a, then every 4h in the sample schedule).", "Home")), 12, 1)],
+                "Monitoring only (no Home Assistant commands). Values refresh with the home-status routine (6:20a, then every 4h in the sample schedule). "
+                "If Home Assistant reads as blank, the status file is older than 30 minutes and a down reading is unverified — use the status-age tile, then rerun the home-status refresh.", "Home")), 12, 1)],
             [C(sv("Home Assistant up", d1("grokbot.home.ha.up"), scale=ONE_GOOD), 2, 1),
+             C(sv("HA status age (min; red after 10h)", d1("grokbot.home.status.age_minutes"), scale=SCALE_HA_AGE), 2, 1),
              C(sv("Storage healthy", d1("grokbot.home.nas.ok"), scale=ONE_GOOD), 2, 1),
              C(sv("Volume used", d1("grokbot.home.nas.volume_used_pct"), suffix="%", precision=1, scale=NAS_VOL), 2, 1),
              C(sv("Cameras offline", d1("grokbot.home.camera.offline_count"), scale=ZERO_GOOD), 2, 1),
-             C(sv("Open alerts", d1("grokbot.home.alerts.count"), scale=ZERO_WARN), 2, 1),
-             C(sv("Low batteries", d1("grokbot.home.battery_low_count"), scale=ZERO_WARN), 2, 1)],
+             C(sv("Open alerts", d1("grokbot.home.alerts.count"), scale=ZERO_WARN), 2, 1)],
             [C(sv("Network watchdog ok", d1("grokbot.home.unifi.watchdog_ok"), scale=ONE_GOOD), 2, 1),
              C(sv("Firmware update (1 = available)", d1("grokbot.home.unifi.fw_update_available"), scale=ZERO_WARN), 2, 1),
              C(sv("Router memory", d1("grokbot.home.unifi.mem_pct"), suffix="%", scale=UNIFI_MEM), 2, 1),
-             C(sv("Network clients", d1("grokbot.home.unifi.clients")), 2, 1),
+             C(sv("Low batteries", d1("grokbot.home.battery_low_count"), scale=ZERO_WARN), 2, 1),
              C(sv("Storage temp °F", d1("grokbot.home.nas.temp_f"), precision=1, scale=NAS_T), 2, 1),
              C(sv("Printer toner", d1("grokbot.home.printer.toner_pct"), suffix="%", scale=TONER), 2, 1)],
             [C(sv("EV battery", d1("grokbot.home.rivian.battery_pct"), suffix="%", scale=BATT), 3, 1),
@@ -478,6 +482,7 @@ def specs() -> dict[str, dict]:
             [C(ts("EV battery % and energy left (kWh)",
                   "data('grokbot.home.rivian.battery_pct').publish('Battery %')\ndata('grokbot.home.rivian.remaining_kwh').publish('kWh left')", precision=0), 6, 2),
              C(ts("Thermostat temperatures (°F)", "data('grokbot.home.ecobee.temp_f').publish('Temp')", precision=1, zero=False), 6, 2)],
+            [C(eventc("Home detector events", "events(eventType='*').publish('all')"), 12, 1)],
         ],
     )
     S["Ops"] = dict(
@@ -542,17 +547,52 @@ def _layout_from_rows(rows: list[list[tuple[str, int, int]]]) -> list[dict]:
     return layouts
 
 
+def _existing_chart_ids(dest: Path) -> dict[str, str]:
+    """Map dashboard/chart name -> existing placeholder id so exports stay stable."""
+    mapping: dict[str, str] = {}
+    for path in dest.glob("*.json"):
+        if path.name in {"all.json", "usefulness_v3_manifest.json"}:
+            continue
+        try:
+            data = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        dash_name = data.get("description")  # not this
+        # Prefer the filename slug later; use chart names which are unique per board
+        # Key as "{file.stem}::{chart name}" and also bare chart name when unique.
+        for entry in data.get("charts") or []:
+            chart = entry.get("chart") or {}
+            name = chart.get("name")
+            cid = (entry.get("layout") or {}).get("chartId") or chart.get("id")
+            if name and cid:
+                mapping[f"{path.stem}::{name}"] = cid
+        for i, ov in enumerate(data.get("eventOverlays") or [], start=1):
+            oid = ov.get("overlayId")
+            if oid:
+                mapping[f"{path.stem}::overlay::{ov.get('eventSignal', {}).get('eventSearchText') or i}"] = oid
+    return mapping
+
+
+def _next_placeholder(existing: set[str], prefix: str) -> str:
+    n = 1
+    while f"<{prefix}_{n}>" in existing:
+        n += 1
+    token = f"<{prefix}_{n}>"
+    existing.add(token)
+    return token
+
+
 def export_definitions(dest: Path | None = None) -> dict[str, Any]:
     """Write redacted dashboard JSON and a safe manifest. Returns the manifest."""
     dest = dest or DEST
     dest.mkdir(parents=True, exist_ok=True)
-    # Drop the pre-v3 Bot Health export; v3 renamed that board to Bot Ops.
     stale = dest / "bot_health.json"
     if stale.exists():
         stale.unlink()
 
-    chart_n = 0
-    overlay_n = 0
+    prior = _existing_chart_ids(dest)
+    used_ids = set(prior.values())
+
     export = {
         "group": {"id": "<GROUP_ID>", "name": "Grok Bot"},
         "realm": "<REALM>",
@@ -560,35 +600,37 @@ def export_definitions(dest: Path | None = None) -> dict[str, Any]:
     }
     manifest = {"dashboards": {}, "notes": "Placeholder IDs only. Re-apply by name in your own org."}
 
+    overlay_used = {v for k, v in prior.items() if "::overlay::" in k}
+
     for key, spec in specs().items():
+        slug = SLUGS[key]
         charts_out = []
         built_rows = []
         made = []
         for row in spec["rows"]:
             built = []
             for defn, width, height in row:
-                chart_n += 1
-                cid = f"<CHART_ID_{chart_n}>"
+                name = defn["name"]
+                cid = prior.get(f"{slug}::{name}")
+                if not cid or not str(cid).startswith("<CHART_ID_"):
+                    cid = _next_placeholder(used_ids, "CHART_ID")
                 body = {
-                    "name": defn["name"],
+                    "name": name,
                     "programText": defn.get("programText") or "",
                     "options": defn.get("options") or {},
                     "description": defn.get("description"),
                     "id": cid,
                 }
-                charts_out.append({"layout": None, "chart": body})  # layout filled below
+                charts_out.append({"layout": None, "chart": body})
                 built.append((cid, width, height, len(charts_out) - 1))
                 made.append({
                     "id": cid,
-                    "name": defn["name"],
+                    "name": name,
                     "type": (defn.get("options") or {}).get("type"),
                     "programText": defn.get("programText") or "",
                 })
             built_rows.append(built)
         layouts = _layout_from_rows([[(cid, w, h) for cid, w, h, _ in row] for row in built_rows])
-        for row, layout_row in zip(built_rows, [layouts[i:i] for i in [0]]):
-            pass
-        # map layouts in order
         flat_idx = 0
         for row in built_rows:
             for cid, w, h, idx in row:
@@ -597,9 +639,12 @@ def export_definitions(dest: Path | None = None) -> dict[str, Any]:
 
         overlays = []
         for item in spec.get("overlays") or []:
-            overlay_n += 1
+            search = (item.get("eventSignal") or {}).get("eventSearchText") or ""
+            oid = prior.get(f"{slug}::overlay::{search}")
+            if not oid or not str(oid).startswith("<OVERLAY_ID_"):
+                oid = _next_placeholder(overlay_used, "OVERLAY_ID")
             entry = dict(item)
-            entry["overlayId"] = f"<OVERLAY_ID_{overlay_n}>"
+            entry["overlayId"] = oid
             overlays.append(entry)
 
         dash = {
@@ -611,7 +656,7 @@ def export_definitions(dest: Path | None = None) -> dict[str, Any]:
             "charts": charts_out,
         }
         export["dashboards"][spec["name"]] = dash
-        (dest / f"{SLUGS[key]}.json").write_text(json.dumps(dash, indent=2) + "\n")
+        (dest / f"{slug}.json").write_text(json.dumps(dash, indent=2) + "\n")
         manifest["dashboards"][key] = {
             "id": IDS[key],
             "url": dash["url"],
@@ -622,6 +667,7 @@ def export_definitions(dest: Path | None = None) -> dict[str, Any]:
     (dest / "all.json").write_text(json.dumps(export, indent=2) + "\n")
     (dest / "usefulness_v3_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return manifest
+
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

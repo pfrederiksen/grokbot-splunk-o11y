@@ -18,10 +18,10 @@
           "programText": "data('grokbot.pipeline.overdue_count').publish('v')"
         },
         {
-          "id": "<CHART_ID_3>",
-          "name": "Near budget (\u226575%) \u2192 watch",
+          "id": "<CHART_ID_129>",
+          "name": "HA status age (min; red after 10h, then home refresh)",
           "type": "SingleValue",
-          "programText": "data('grokbot.pipeline.warn_count').publish('v')"
+          "programText": "data('grokbot.home.status.age_minutes').publish('v')"
         },
         {
           "id": "<CHART_ID_4>",
@@ -593,6 +593,12 @@
           "programText": "data('grokbot.home.ha.up').publish('v')"
         },
         {
+          "id": "<CHART_ID_130>",
+          "name": "HA status age (min; red after 10h)",
+          "type": "SingleValue",
+          "programText": "data('grokbot.home.status.age_minutes').publish('v')"
+        },
+        {
           "id": "<CHART_ID_93>",
           "name": "Storage healthy",
           "type": "SingleValue",
@@ -617,12 +623,6 @@
           "programText": "data('grokbot.home.alerts.count').publish('v')"
         },
         {
-          "id": "<CHART_ID_97>",
-          "name": "Low batteries",
-          "type": "SingleValue",
-          "programText": "data('grokbot.home.battery_low_count').publish('v')"
-        },
-        {
           "id": "<CHART_ID_98>",
           "name": "Network watchdog ok",
           "type": "SingleValue",
@@ -641,10 +641,10 @@
           "programText": "data('grokbot.home.unifi.mem_pct').publish('v')"
         },
         {
-          "id": "<CHART_ID_101>",
-          "name": "Network clients",
+          "id": "<CHART_ID_97>",
+          "name": "Low batteries",
           "type": "SingleValue",
-          "programText": "data('grokbot.home.unifi.clients').publish('v')"
+          "programText": "data('grokbot.home.battery_low_count').publish('v')"
         },
         {
           "id": "<CHART_ID_102>",
@@ -705,6 +705,12 @@
           "name": "Thermostat temperatures (\u00b0F)",
           "type": "TimeSeriesChart",
           "programText": "data('grokbot.home.ecobee.temp_f').publish('Temp')"
+        },
+        {
+          "id": "<CHART_ID_131>",
+          "name": "Home detector events",
+          "type": "Event",
+          "programText": "events(eventType='*').publish('all')"
         }
       ]
     },

@@ -74,7 +74,7 @@
             "programText": "",
             "options": {
               "type": "Text",
-              "markdown": "# Mission Control\n\nTop row = needs attention (anything not green is a to-do). Second block = every pipeline's age as a % of its schedule budget: 100% means the latest run that should have finished has not landed. Bottom = headline numbers.\n\n**Overview** \u00b7 [Bot Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>) \u00b7 [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) \u00b7 [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
+              "markdown": "# Mission Control\n\nTop row = needs attention (anything not green is a to-do). Second block = every pipeline's age as a % of its schedule budget: 100% means the latest run that should have finished has not landed. Bottom = headline numbers. HA up can be blank when the home status file is stale; the status-age tile is the one to act on.\n\n**Overview** \u00b7 [Bot Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>) \u00b7 [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) \u00b7 [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 [Home](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_HOME>) \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
             },
             "description": null,
             "id": "<CHART_ID_1>"
@@ -123,15 +123,15 @@
         },
         {
           "layout": {
-            "chartId": "<CHART_ID_3>",
+            "chartId": "<CHART_ID_129>",
             "column": 2,
             "height": 1,
             "row": 1,
             "width": 2
           },
           "chart": {
-            "name": "Near budget (\u226575%) \u2192 watch",
-            "programText": "data('grokbot.pipeline.warn_count').publish('v')",
+            "name": "HA status age (min; red after 10h, then home refresh)",
+            "programText": "data('grokbot.home.status.age_minutes').publish('v')",
             "options": {
               "type": "SingleValue",
               "secondaryVisualization": "Sparkline",
@@ -143,23 +143,28 @@
                 {
                   "label": "v",
                   "yAxis": 0,
-                  "displayName": "Near budget (\u226575%) \u2192 watch"
+                  "displayName": "HA status age (min; red after 10h, then home refresh)"
                 }
               ],
               "colorBy": "Scale",
               "colorScale2": [
                 {
                   "paletteIndex": 14,
-                  "lt": 1
+                  "lt": 270
                 },
                 {
                   "paletteIndex": 17,
-                  "gte": 1
+                  "gte": 270,
+                  "lt": 600
+                },
+                {
+                  "paletteIndex": 16,
+                  "gte": 600
                 }
               ]
             },
             "description": null,
-            "id": "<CHART_ID_3>"
+            "id": "<CHART_ID_129>"
           }
         },
         {
@@ -3473,7 +3478,7 @@
             "programText": "",
             "options": {
               "type": "Text",
-              "markdown": "# Home\n\nMonitoring only (no Home Assistant commands). Values refresh with the home-status routine (6:20a, then every 4h in the sample schedule).\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) \u00b7 [Bot Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>) \u00b7 [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) \u00b7 [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 **Home** \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
+              "markdown": "# Home\n\nMonitoring only (no Home Assistant commands). Values refresh with the home-status routine (6:20a, then every 4h in the sample schedule). If Home Assistant reads as blank, the status file is older than 30 minutes and a down reading is unverified \u2014 use the status-age tile, then rerun the home-status refresh.\n\n[Overview](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OVERVIEW_MISSION_CONTROL>) \u00b7 [Bot Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BOT_OPS>) \u00b7 [Trading](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_TRADING>) \u00b7 [Golf](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_GOLF>) \u00b7 [Birds](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_BIRDS>) \u00b7 **Home** \u00b7 [Ops](https://app.<REALM>.signalfx.com/#/dashboard/<DASHBOARD_ID_OPS>)\n\nColors: green = fine, gold = watch (75% of budget used), red = act now. Tile titles say what to do."
             },
             "description": null,
             "id": "<CHART_ID_91>"
@@ -3522,8 +3527,54 @@
         },
         {
           "layout": {
-            "chartId": "<CHART_ID_93>",
+            "chartId": "<CHART_ID_130>",
             "column": 2,
+            "height": 1,
+            "row": 1,
+            "width": 2
+          },
+          "chart": {
+            "name": "HA status age (min; red after 10h)",
+            "programText": "data('grokbot.home.status.age_minutes').publish('v')",
+            "options": {
+              "type": "SingleValue",
+              "secondaryVisualization": "Sparkline",
+              "maximumPrecision": 0,
+              "refreshInterval": 0,
+              "timestampHidden": false,
+              "unitPrefix": "Metric",
+              "publishLabelOptions": [
+                {
+                  "label": "v",
+                  "yAxis": 0,
+                  "displayName": "HA status age (min; red after 10h)"
+                }
+              ],
+              "colorBy": "Scale",
+              "colorScale2": [
+                {
+                  "paletteIndex": 14,
+                  "lt": 270
+                },
+                {
+                  "paletteIndex": 17,
+                  "gte": 270,
+                  "lt": 600
+                },
+                {
+                  "paletteIndex": 16,
+                  "gte": 600
+                }
+              ]
+            },
+            "description": null,
+            "id": "<CHART_ID_130>"
+          }
+        },
+        {
+          "layout": {
+            "chartId": "<CHART_ID_93>",
+            "column": 4,
             "height": 1,
             "row": 1,
             "width": 2
@@ -3564,7 +3615,7 @@
         {
           "layout": {
             "chartId": "<CHART_ID_94>",
-            "column": 4,
+            "column": 6,
             "height": 1,
             "row": 1,
             "width": 2
@@ -3611,7 +3662,7 @@
         {
           "layout": {
             "chartId": "<CHART_ID_95>",
-            "column": 6,
+            "column": 8,
             "height": 1,
             "row": 1,
             "width": 2
@@ -3652,7 +3703,7 @@
         {
           "layout": {
             "chartId": "<CHART_ID_96>",
-            "column": 8,
+            "column": 10,
             "height": 1,
             "row": 1,
             "width": 2
@@ -3688,47 +3739,6 @@
             },
             "description": null,
             "id": "<CHART_ID_96>"
-          }
-        },
-        {
-          "layout": {
-            "chartId": "<CHART_ID_97>",
-            "column": 10,
-            "height": 1,
-            "row": 1,
-            "width": 2
-          },
-          "chart": {
-            "name": "Low batteries",
-            "programText": "data('grokbot.home.battery_low_count').publish('v')",
-            "options": {
-              "type": "SingleValue",
-              "secondaryVisualization": "Sparkline",
-              "maximumPrecision": 0,
-              "refreshInterval": 0,
-              "timestampHidden": false,
-              "unitPrefix": "Metric",
-              "publishLabelOptions": [
-                {
-                  "label": "v",
-                  "yAxis": 0,
-                  "displayName": "Low batteries"
-                }
-              ],
-              "colorBy": "Scale",
-              "colorScale2": [
-                {
-                  "paletteIndex": 14,
-                  "lt": 1
-                },
-                {
-                  "paletteIndex": 17,
-                  "gte": 1
-                }
-              ]
-            },
-            "description": null,
-            "id": "<CHART_ID_97>"
           }
         },
         {
@@ -3862,15 +3872,15 @@
         },
         {
           "layout": {
-            "chartId": "<CHART_ID_101>",
+            "chartId": "<CHART_ID_97>",
             "column": 6,
             "height": 1,
             "row": 2,
             "width": 2
           },
           "chart": {
-            "name": "Network clients",
-            "programText": "data('grokbot.home.unifi.clients').publish('v')",
+            "name": "Low batteries",
+            "programText": "data('grokbot.home.battery_low_count').publish('v')",
             "options": {
               "type": "SingleValue",
               "secondaryVisualization": "Sparkline",
@@ -3882,13 +3892,23 @@
                 {
                   "label": "v",
                   "yAxis": 0,
-                  "displayName": "Network clients"
+                  "displayName": "Low batteries"
                 }
               ],
-              "colorBy": "Dimension"
+              "colorBy": "Scale",
+              "colorScale2": [
+                {
+                  "paletteIndex": 14,
+                  "lt": 1
+                },
+                {
+                  "paletteIndex": 17,
+                  "gte": 1
+                }
+              ]
             },
             "description": null,
-            "id": "<CHART_ID_101>"
+            "id": "<CHART_ID_97>"
           }
         },
         {
@@ -4218,6 +4238,24 @@
             },
             "description": null,
             "id": "<CHART_ID_111>"
+          }
+        },
+        {
+          "layout": {
+            "chartId": "<CHART_ID_131>",
+            "column": 0,
+            "height": 1,
+            "row": 8,
+            "width": 12
+          },
+          "chart": {
+            "name": "Home detector events",
+            "programText": "events(eventType='*').publish('all')",
+            "options": {
+              "type": "Event"
+            },
+            "description": null,
+            "id": "<CHART_ID_131>"
           }
         }
       ]
